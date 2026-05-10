@@ -42,6 +42,17 @@ const FONT_STYLES = `
 .drive-pro { animation: drivePro 14s ease-out forwards; }
 @keyframes pulsePing { 0%{transform:scale(1);opacity:0.8} 100%{transform:scale(2.5);opacity:0} }
 .ping { animation: pulsePing 1.4s ease-out infinite; }
+.shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; transform: translate3d(0, 0, 0); }
+@keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+.pop { animation: pop 0.25s cubic-bezier(0.175,0.885,0.32,1.275); }
+@keyframes pop { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }
+.glow-focus { transition: box-shadow 0.3s ease; }
+.glow-focus:focus-within { box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2); }
+.bg-transition { transition: background-color 0.5s ease; }
+.float-icon { animation: floatIcon 3s ease-in-out infinite; }
+@keyframes floatIcon { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-8px) scale(1.05);} }
+.radar-pulse { animation: radarPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes radarPulse { 0%{transform:scale(1);opacity:0.8} 100%{transform:scale(3);opacity:0} }
 `;
 
 /* ─── Services ─── */
@@ -421,7 +432,7 @@ function SplashScreen() {
   );
 }
 
-function HomeScreen({ goTo, openService }) {
+function HomeScreen({ goTo, openService, user }) {
   const [searchQ, setSearchQ] = useState("");
   const filteredServices = SERVICES.filter(s =>
     s.name.toLowerCase().includes(searchQ.toLowerCase()) ||
@@ -436,10 +447,10 @@ function HomeScreen({ goTo, openService }) {
           <div>
             <div className="flex items-center gap-1.5 text-stone-500 text-xs font-medium mb-1">
               <MapPin size={12} className="text-orange-500" />
-              <span>Rajkot, Gujarat</span>
+              <span>{user?.location || "Rajkot, Gujarat"}</span>
               <ChevronDown size={12} />
             </div>
-            <p className="font-display text-stone-900 text-2xl font-bold leading-tight">Good morning,<br/>Akash! 👋</p>
+            <p className="font-display text-stone-900 text-2xl font-bold leading-tight">Good morning,<br/>{(user?.name || "Akash").split(' ')[0]}! 👋</p>
           </div>
           <div className="flex gap-2">
             <button className="w-9 h-9 bg-stone-100 rounded-full flex items-center justify-center relative">
@@ -720,7 +731,7 @@ function ServiceScreen({ svc, goTo, setQuickBk }) {
   );
 }
 
-function BookingScreen({ svc, goTo, onPay }) {
+function BookingScreen({ svc, goTo, onPay, user, setUser }) {
   const plans    = SERVICE_PLANS[svc.id] || SERVICE_PLANS.ac;
   const addons   = SERVICE_ADDONS[svc.id] || [];
   const [plan, setPlan]     = useState(1);
@@ -729,7 +740,6 @@ function BookingScreen({ svc, goTo, onPay }) {
   const [couponOk, setCouponOk] = useState(false);
   const [couponErr, setCouponErr] = useState("");
   const [slot, setSlot]     = useState({ day:"Tomorrow", time:"11 AM – 1 PM" });
-  const [addr, setAddr]     = useState("Flat 4B, Park Avenue, Rajkot");
 
   const toggleAddon = id => setPicked(prev => { const s=new Set(prev); s.has(id)?s.delete(id):s.add(id); return s; });
   const applyCoupon = () => {
@@ -816,12 +826,11 @@ function BookingScreen({ svc, goTo, onPay }) {
           </div>
         </div>
 
-        {/* Address */}
         <div className="bg-white mx-4 mt-3 rounded-2xl p-4 shadow-tile">
           <p className="font-bold text-stone-900 text-sm mb-2">📍 Address</p>
           <div className="flex items-center gap-2 bg-stone-50 rounded-xl px-3 py-2.5">
             <MapPin size={14} className="text-orange-500 flex-shrink-0" />
-            <input value={addr} onChange={e=>setAddr(e.target.value)}
+            <input value={user?.address} onChange={e=>setUser && setUser(u=>({...u, address: e.target.value}))}
               className="flex-1 bg-transparent text-sm text-stone-700 outline-none" />
           </div>
         </div>
@@ -886,7 +895,7 @@ function BookingScreen({ svc, goTo, onPay }) {
 
       {/* Pay button */}
       <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-stone-100 px-4 py-4">
-        <button onClick={()=>onPay(total)}
+        <button onClick={()=>onPay(total, plans[plan].name, slot.day)}
           className="w-full bg-orange-500 text-white rounded-2xl py-4 font-display font-bold text-base flex items-center justify-center gap-2">
           <CreditCard size={18} />
           Pay ₹{total.toLocaleString("en-IN")}
@@ -1097,16 +1106,9 @@ function TrackingScreen({ svc, goTo }) {
   );
 }
 
-function BookingsScreen({ goTo }) {
-  const ACTIVE = [
-    { svc:"AC Service", status:"On the way · ETA 12 min", icon:Wind, color:"bg-sky-500", id:"ac", dot:"bg-sky-400" },
-    { svc:"Cleaning",   status:"Scheduled · Tomorrow 11 AM", icon:Sparkles, color:"bg-emerald-500", id:"cleaning", dot:"bg-emerald-400" },
-  ];
-  const PAST = [
-    { svc:"Salon",   date:"May 3", rating:5, icon:Scissors, color:"bg-rose-500" },
-    { svc:"Plumber", date:"Apr 28",rating:4, icon:Wrench,   color:"bg-amber-500" },
-    { svc:"Pest Control", date:"Apr 15", rating:5, icon:Bug, color:"bg-lime-600" },
-  ];
+function BookingsScreen({ goTo, bookings }) {
+  const ACTIVE = (bookings || []).filter(b => b.active);
+  const PAST = (bookings || []).filter(b => !b.active);
   return (
     <div className="absolute inset-0 bg-stone-50 flex flex-col overflow-hidden">
       <div className="bg-white px-5 pt-10 pb-4 flex-shrink-0">
@@ -1115,11 +1117,13 @@ function BookingsScreen({ goTo }) {
       <div className="flex-1 overflow-y-auto no-scrollbar px-4 pt-4">
         <p className="text-xs font-bold text-stone-400 uppercase tracking-wide mb-3">Active</p>
         <div className="space-y-3 mb-5">
-          {ACTIVE.map((b,i) => (
+          {ACTIVE.map((b,i) => {
+            const Icon = b.icon || Star;
+            return (
             <div key={i} className="bg-white rounded-2xl p-4 shadow-tile">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 ${b.color} rounded-xl flex items-center justify-center`}>
-                  <b.icon size={18} className="text-white" />
+                <div className={`w-10 h-10 ${b.color || 'bg-stone-500'} rounded-xl flex items-center justify-center`}>
+                  <Icon size={18} className="text-white" />
                 </div>
                 <div className="flex-1">
                   <p className="font-bold text-stone-900 text-sm">{b.svc}</p>
@@ -1134,25 +1138,27 @@ function BookingsScreen({ goTo }) {
                 </button>
               </div>
             </div>
-          ))}
+          )})}
         </div>
         <p className="text-xs font-bold text-stone-400 uppercase tracking-wide mb-3">Past bookings</p>
         <div className="space-y-3">
-          {PAST.map((b,i) => (
+          {PAST.map((b,i) => {
+            const Icon = b.icon || Star;
+            return (
             <div key={i} className="bg-white rounded-2xl p-4 shadow-tile flex items-center gap-3">
-              <div className={`w-10 h-10 ${b.color} rounded-xl flex items-center justify-center`}>
-                <b.icon size={18} className="text-white" />
+              <div className={`w-10 h-10 ${b.color || 'bg-stone-500'} rounded-xl flex items-center justify-center`}>
+                <Icon size={18} className="text-white" />
               </div>
               <div className="flex-1">
                 <p className="font-bold text-stone-900 text-sm">{b.svc}</p>
                 <p className="text-stone-400 text-xs">{b.date}</p>
               </div>
               <div className="flex items-center gap-1">
-                {[...Array(b.rating)].map((_,j)=><Star key={j} size={11} className="text-amber-400 fill-amber-400" />)}
+                {[...Array(b.rating || 5)].map((_,j)=><Star key={j} size={11} className="text-amber-400 fill-amber-400" />)}
               </div>
               <button className="text-xs text-orange-500 font-bold">Rebook</button>
             </div>
-          ))}
+          )})}
         </div>
         <div className="h-24" />
       </div>
@@ -1200,8 +1206,361 @@ function HelpScreen() {
   );
 }
 
-function ProfileScreen() {
-  const stats = [{label:"Bookings",value:"12"},{label:"Saved ₹",value:"1.2k"},{label:"Reviews",value:"8"}];
+function OnboardingScreen({ goTo }) {
+  const [step, setStep] = useState(0);
+  const slides = [
+    {
+      title: "Verified Professionals",
+      desc: "Every pro is background checked, ID verified and highly rated by your neighbours.",
+      icon: Shield,
+      emoji: "🛡",
+      gradient: "from-emerald-400 to-teal-500",
+      bg: "from-emerald-50 to-teal-50",
+      accent: "text-emerald-600",
+      dot: "bg-emerald-500",
+    },
+    {
+      title: "Transparent Pricing",
+      desc: "No hidden costs. See the exact price before you confirm. Fixed rates, always.",
+      icon: Tag,
+      emoji: "💰",
+      gradient: "from-sky-400 to-blue-500",
+      bg: "from-sky-50 to-blue-50",
+      accent: "text-sky-600",
+      dot: "bg-sky-500",
+    },
+    {
+      title: "Book in 60 Seconds",
+      desc: "Choose a service, pick a slot, and track your pro live. Done.",
+      icon: ZapIcon,
+      emoji: "⚡",
+      gradient: "from-orange-400 to-amber-500",
+      bg: "from-orange-50 to-amber-50",
+      accent: "text-orange-600",
+      dot: "bg-orange-500",
+    },
+  ];
+  const s = slides[step];
+  return (
+    <div className={`absolute inset-0 flex flex-col overflow-hidden bg-gradient-to-b ${s.bg}`}>
+      {/* Skip */}
+      <div className="flex justify-end px-5 pt-12">
+        <button onClick={()=>goTo("auth")} className="text-stone-400 text-xs font-bold px-3 py-1.5 rounded-full bg-white/60">
+          Skip
+        </button>
+      </div>
+
+      {/* Illustration */}
+      <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
+        <div className={`w-28 h-28 rounded-[2rem] bg-gradient-to-br ${s.gradient} flex items-center justify-center mb-8 shadow-2xl float-icon`}>
+          <span className="text-5xl">{s.emoji}</span>
+        </div>
+        <p className="font-display font-bold text-stone-900 text-[1.6rem] leading-tight mb-3">{s.title}</p>
+        <p className="text-stone-500 text-sm leading-relaxed max-w-xs">{s.desc}</p>
+      </div>
+
+      {/* Dots + CTA */}
+      <div className="pb-10 px-6">
+        <div className="flex justify-center gap-2 mb-8">
+          {slides.map((sl, i) => (
+            <button key={i} onClick={()=>setStep(i)}
+              className={`h-2 rounded-full transition-all duration-300 ${step===i?`w-8 ${sl.dot}` :"w-2 bg-stone-300"}`} />
+          ))}
+        </div>
+        {step < slides.length - 1 ? (
+          <button onClick={()=>setStep(s=>s+1)}
+            className={`w-full bg-gradient-to-r ${s.gradient} text-white rounded-2xl py-4 font-bold text-base shadow-lg active:scale-[0.98] transition-transform`}>
+            Next →
+          </button>
+        ) : (
+          <button onClick={()=>goTo("auth")}
+            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl py-4 font-bold text-base shadow-lg shadow-orange-500/30 active:scale-[0.98] transition-transform">
+            Get Started ✨
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AuthScreen({ goTo, setUser, user }) {
+  const [phone, setPhone] = useState(user?.rawPhone || "");
+  const formatted = phone.replace(/(\d{5})(\d{1,5})/, "$1 $2");
+  return (
+    <div className="absolute inset-0 bg-white flex flex-col overflow-hidden fade-in">
+      {/* Top illustration */}
+      <div className="bg-gradient-to-br from-orange-50 to-amber-50 px-5 pt-12 pb-8 text-center">
+        <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg float-icon">
+          <Phone size={28} className="text-white" />
+        </div>
+        <p className="font-display font-bold text-stone-900 text-2xl mb-1">What's your number?</p>
+        <p className="text-stone-500 text-sm">We'll send a 4-digit OTP to verify</p>
+      </div>
+
+      <div className="px-5 pt-6 flex-1">
+        {/* Phone input */}
+        <div className="flex items-center gap-3 border-2 border-stone-200 focus-within:border-orange-500 rounded-2xl px-4 py-3.5 bg-stone-50 focus-within:bg-orange-50/30 glow-focus transition-all mb-3">
+          <div className="flex items-center gap-2 border-r border-stone-300 pr-3 flex-shrink-0">
+            <span className="text-lg">🇮🇳</span>
+            <span className="text-stone-700 font-bold text-sm">+91</span>
+          </div>
+          <input type="tel" value={formatted} onChange={e=>setPhone(e.target.value.replace(/\D/g,"").slice(0,10))}
+            className="flex-1 bg-transparent text-xl font-bold text-stone-900 outline-none placeholder-stone-300 tracking-widest"
+            placeholder="98765 43210" autoFocus inputMode="numeric" />
+          {phone.length === 10 && <Check size={18} className="text-emerald-500 flex-shrink-0" />}
+        </div>
+        <p className="text-stone-400 text-xs px-1">By continuing, you agree to our Terms & Privacy Policy</p>
+
+        {/* Popular country hint */}
+        <div className="mt-6 bg-stone-50 rounded-2xl p-4">
+          <p className="text-xs font-bold text-stone-400 uppercase tracking-wide mb-2">Why phone number?</p>
+          <div className="space-y-2">
+            {["No passwords to remember","Instant OTP login","Secure & private"].map((t,i)=>(
+              <div key={i} className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check size={9} className="text-emerald-600" strokeWidth={3} />
+                </div>
+                <span className="text-stone-600 text-xs">{t}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="px-5 pb-8">
+        <button disabled={phone.length < 10}
+          onClick={()=>{ setUser&&setUser(u=>({...u, rawPhone:phone, phone:"+91 "+phone.slice(0,5)+"*****"})); goTo("otp"); }}
+          className="w-full bg-orange-500 text-white disabled:bg-stone-200 disabled:text-stone-400 rounded-2xl py-4 font-bold text-base active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          Send OTP
+          {phone.length===10 && <span className="text-orange-200 text-sm">→</span>}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function OtpScreen({ goTo, user }) {
+  const [digits, setDigits] = useState(["","","",""]);
+  const [success, setSuccess] = useState(false);
+  const [error, setError]     = useState(false);
+  const [resent, setResent]   = useState(false);
+  const [timer, setTimer]     = useState(30);
+  const refs = [useRef(), useRef(), useRef(), useRef()];
+  const otp = digits.join("");
+
+  // Countdown timer
+  useEffect(()=>{
+    if (timer <= 0) return;
+    const t = setInterval(()=>setTimer(n=>n-1), 1000);
+    return ()=>clearInterval(t);
+  }, [timer]);
+
+  const handleChange = (i, val) => {
+    val = val.replace(/\D/g,"").slice(-1);
+    const next = [...digits];
+    next[i] = val;
+    setDigits(next);
+    if (val && i < 3) refs[i+1].current?.focus();
+    // Auto-verify when all filled
+    if (val && i === 3) {
+      const full = next.join("");
+      setTimeout(()=>verify(full), 100);
+    }
+  };
+
+  const handleKeyDown = (i, e) => {
+    if (e.key==="Backspace" && !digits[i] && i > 0) refs[i-1].current?.focus();
+  };
+
+  const handlePaste = (e) => {
+    const pasted = e.clipboardData.getData("text").replace(/\D/g,"").slice(0,4);
+    if (pasted.length === 4) {
+      setDigits(pasted.split(""));
+      refs[3].current?.focus();
+      setTimeout(()=>verify(pasted), 100);
+    }
+    e.preventDefault();
+  };
+
+  const verify = (code) => {
+    if (code === "1234") {
+      setError(false);
+      setSuccess(true);
+      setTimeout(()=>goTo("name"), 1600);
+    } else {
+      setError(true);
+      setDigits(["","","",""]);
+      refs[0].current?.focus();
+      setTimeout(()=>setError(false), 700);
+    }
+  };
+
+  const resend = () => { setTimer(30); setResent(true); setTimeout(()=>setResent(false), 2000); };
+  const displayPhone = user?.phone || "+91 98*** *****";
+
+  return (
+    <div className="absolute inset-0 bg-white flex flex-col overflow-hidden fade-in">
+      {success && <ConfettiOverlay />}
+
+      {/* Header */}
+      <div className="px-5 pt-12 pb-6">
+        <button onClick={()=>goTo("auth")} className="w-9 h-9 bg-stone-100 rounded-full flex items-center justify-center mb-6 active:scale-90 transition-transform">
+          <ArrowLeft size={18} className="text-stone-700" />
+        </button>
+        <p className="font-display font-bold text-stone-900 text-2xl mb-1">Enter OTP</p>
+        <div className="flex items-center gap-2">
+          <p className="text-stone-500 text-sm">Sent to <span className="font-bold text-stone-800">{displayPhone}</span></p>
+          <button onClick={()=>goTo("auth")} className="text-orange-500 text-xs font-bold">Edit</button>
+        </div>
+      </div>
+
+      <div className="px-5 flex-1">
+        {/* OTP boxes */}
+        <div className={`flex gap-3 justify-center mb-2 relative ${error?"shake":""}`} onPaste={handlePaste}>
+          {success && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 bounce-in">
+              <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center shadow-lg">
+                <Check className="text-emerald-500" size={36} strokeWidth={3} />
+              </div>
+            </div>
+          )}
+          {[0,1,2,3].map(i => (
+            <input key={i} ref={refs[i]} type="tel" inputMode="numeric" maxLength={1}
+              value={digits[i]}
+              onChange={e=>handleChange(i, e.target.value)}
+              onKeyDown={e=>handleKeyDown(i, e)}
+              className={`w-16 h-16 border-2 rounded-2xl text-center text-2xl font-bold outline-none transition-all
+                ${error?"border-red-400 bg-red-50 text-red-500 shake":
+                  digits[i]?"border-orange-500 bg-orange-50 text-orange-600 pop":
+                  "border-stone-200 focus:border-orange-400 focus:bg-orange-50/50 text-stone-900"}`} />
+          ))}
+        </div>
+
+        {error && (
+          <p className="text-center text-sm font-semibold text-red-500 mt-3 fade-in">
+            ❌ Wrong OTP — hint: try <span className="font-mono font-bold">1234</span>
+          </p>
+        )}
+
+        {/* Resend */}
+        <div className="text-center mt-5">
+          {timer > 0 ? (
+            <p className="text-stone-400 text-sm">Resend in <span className="font-bold text-stone-600">{timer}s</span></p>
+          ) : (
+            <button onClick={resend} className="text-orange-500 text-sm font-bold active:scale-95 transition-transform">
+              {resent ? "✓ OTP sent again!" : "Resend OTP"}
+            </button>
+          )}
+        </div>
+
+        {/* Hint box */}
+        <div className="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+          <span className="text-lg mt-0.5">💡</span>
+          <div>
+            <p className="text-amber-800 text-xs font-bold">Demo mode</p>
+            <p className="text-amber-700 text-xs mt-0.5">Use OTP <span className="font-mono font-bold">1234</span> to continue</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-5 pb-8">
+        <button disabled={otp.length < 4 || success} onClick={()=>verify(otp)}
+          className={`w-full text-white disabled:bg-stone-200 disabled:text-stone-400 rounded-2xl py-4 font-bold text-base active:scale-[0.98] transition-all ${success?"bg-emerald-500":"bg-orange-500"}`}>
+          {success ? "✓ Verified!" : "Verify OTP"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function NameScreen({ goTo, setUser }) {
+  const [name, setName] = useState("");
+  const trimmed = name.trim();
+  return (
+    <div className="absolute inset-0 bg-white flex flex-col overflow-hidden fade-in">
+      <div className="bg-gradient-to-br from-violet-50 to-fuchsia-50 px-5 pt-12 pb-8 text-center">
+        <div className="w-16 h-16 bg-gradient-to-br from-violet-400 to-fuchsia-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg float-icon">
+          <span className="text-3xl">👋</span>
+        </div>
+        <p className="font-display font-bold text-stone-900 text-2xl mb-1">What's your name?</p>
+        <p className="text-stone-500 text-sm">So your pro can greet you properly!</p>
+      </div>
+
+      <div className="px-5 pt-6 flex-1">
+        <div className="border-2 border-stone-200 focus-within:border-orange-500 rounded-2xl px-4 py-3.5 bg-stone-50 focus-within:bg-orange-50/30 glow-focus transition-all mb-4">
+          <input value={name} onChange={e=>setName(e.target.value)} autoFocus
+            className="w-full bg-transparent text-xl font-bold text-stone-900 outline-none placeholder-stone-300"
+            placeholder="Akash Kumar" maxLength={30} />
+        </div>
+
+        {/* Name suggestions */}
+        <div className="flex gap-2 flex-wrap">
+          {["Akash","Priya","Rahul","Neha","Vijay","Pooja"].map(n=>(
+            <button key={n} onClick={()=>setName(n)}
+              className="px-3 py-1.5 bg-stone-100 text-stone-600 rounded-xl text-sm font-semibold active:scale-95 transition-transform">
+              {n}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="px-5 pb-8">
+        <button disabled={trimmed.length < 2}
+          onClick={()=>{ setUser&&setUser(u=>({...u, name:trimmed})); goTo("location"); }}
+          className="w-full bg-orange-500 text-white disabled:bg-stone-200 disabled:text-stone-400 rounded-2xl py-4 font-bold text-base active:scale-[0.98] transition-all">
+          {trimmed.length >= 2 ? `Continue as ${trimmed.split(" ")[0]} →` : "Enter your name"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function LocationScreen({ goTo, user, setUser }) {
+  const [manual, setManual] = useState(false);
+  const [locInput, setLocInput] = useState("");
+
+  const handleSetLocation = (loc) => {
+    if (setUser) setUser(u => ({...u, location: loc}));
+    goTo("home", "home");
+  };
+
+  return (
+    <div className="absolute inset-0 bg-stone-50 flex flex-col overflow-hidden fade-in">
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div className="w-24 h-24 bg-sky-100 rounded-full flex items-center justify-center mb-8 relative">
+          <div className="absolute inset-0 rounded-full border-2 border-sky-400 radar-pulse" style={{ animationDelay: '0s' }} />
+          <div className="absolute inset-0 rounded-full border-2 border-sky-400 radar-pulse" style={{ animationDelay: '1s' }} />
+          <MapPin size={40} className="text-sky-500 relative z-10" />
+        </div>
+        <p className="font-display font-bold text-stone-900 text-2xl mb-3">Where do you need the service?</p>
+        <p className="text-stone-500 text-sm leading-relaxed mb-10">We need your location to show available pros and services near you.</p>
+        
+        {manual ? (
+          <div className="w-full flex gap-2 scale-in mb-3">
+            <input value={locInput} onChange={e=>setLocInput(e.target.value)} autoFocus
+              className="flex-1 border-2 border-stone-200 focus:border-orange-500 rounded-2xl px-4 py-3 outline-none text-stone-900 font-semibold"
+              placeholder="e.g. Ahmedabad, Gujarat" />
+            <button onClick={() => locInput && handleSetLocation(locInput)} className="bg-orange-500 text-white rounded-2xl px-5 font-bold active:scale-95 transition-transform">
+              Set
+            </button>
+          </div>
+        ) : (
+          <>
+            <button onClick={() => handleSetLocation("Rajkot, Gujarat")} className="w-full bg-stone-900 text-white rounded-2xl py-4 font-bold text-sm flex items-center justify-center gap-2 mb-3 active:scale-95 transition-transform">
+              <Navigation size={16} /> Use current location
+            </button>
+            <button onClick={() => setManual(true)} className="w-full bg-white text-stone-700 border border-stone-200 rounded-2xl py-4 font-bold text-sm active:scale-95 transition-transform shadow-tile">
+              Enter address manually
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProfileScreen({ goTo, user, bookings }) {
+  const stats = [{label:"Bookings",value:(bookings||[]).length.toString()},{label:"Saved ₹",value:"1.2k"},{label:"Reviews",value:"8"}];
   return (
     <div className="absolute inset-0 bg-stone-50 flex flex-col overflow-hidden">
       <div className="bg-white px-5 pt-10 pb-4 flex-shrink-0">
@@ -1210,9 +1569,11 @@ function ProfileScreen() {
       <div className="flex-1 overflow-y-auto no-scrollbar px-4 pt-4">
         {/* Avatar */}
         <div className="bg-white rounded-2xl p-5 shadow-tile text-center mb-4">
-          <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">AK</div>
-          <p className="font-display font-bold text-stone-900 text-xl">Akash Kumar</p>
-          <p className="text-stone-400 text-sm">+91 98765 43210 · Rajkot</p>
+          <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
+            {(user?.name || "A").charAt(0).toUpperCase()}
+          </div>
+          <p className="font-display font-bold text-stone-900 text-xl">{user?.name || "User"}</p>
+          <p className="text-stone-400 text-sm">{user?.phone || "+91 00000 00000"} · {user?.location?.split(',')[0] || "City"}</p>
           <div className="flex justify-around mt-4 pt-4 border-t border-stone-100">
             {stats.map(s=>(
               <div key={s.label} className="text-center">
@@ -1224,11 +1585,11 @@ function ProfileScreen() {
         </div>
         {/* Menu items */}
         {[{icon:"🏠",label:"Saved addresses"},{icon:"💳",label:"Payment methods"},{icon:"🔔",label:"Notifications"},{icon:"🛡",label:"Privacy & Security"},{icon:"🌐",label:"Language"},{icon:"⭐",label:"Rate the app"},{icon:"🚪",label:"Sign out"}].map((item,i)=>(
-          <div key={i} className="bg-white rounded-2xl shadow-tile px-4 py-4 flex items-center gap-3 mb-2">
+          <button key={i} onClick={() => item.label === "Sign out" && goTo("onboarding")} className="w-full bg-white rounded-2xl shadow-tile px-4 py-4 flex items-center gap-3 mb-2 text-left active:scale-[0.98] transition-transform">
             <span className="text-xl">{item.icon}</span>
             <span className="flex-1 font-semibold text-stone-700 text-sm">{item.label}</span>
             <ChevronRight size={16} className="text-stone-300" />
-          </div>
+          </button>
         ))}
         <div className="h-24" />
       </div>
@@ -1240,6 +1601,12 @@ function ProfileScreen() {
    ROOT APP
 ══════════════════════════════════════════════════════════ */
 export default function AgakApp() {
+  const [user, setUser]         = useState({ name: "Akash Kumar", phone: "", location: "Rajkot, Gujarat", address: "Flat 4B, Park Avenue, Rajkot" });
+  const [bookings, setBookings] = useState([
+    { svc: "AC Service", status: "On the way · ETA 12 min", icon: Wind, color: "bg-sky-500", id: "ac", dot: "bg-sky-400", active: true },
+    { svc: "Cleaning", status: "Scheduled · Tomorrow 11 AM", icon: Sparkles, color: "bg-emerald-500", id: "cleaning", dot: "bg-emerald-400", active: true },
+    { svc: "Salon", date: "May 3", rating: 5, icon: Scissors, color: "bg-rose-500", active: false },
+  ]);
   const [screen, setScreen]     = useState("splash");
   const [prevScreen, setPrev]   = useState(null);
   const [activeTab, setActiveTab] = useState("home");
@@ -1260,10 +1627,10 @@ export default function AgakApp() {
 
   useEffect(() => {
     if (screen === "splash") {
-      const t = setTimeout(() => goTo("home","home"), 2200);
+      const t = setTimeout(() => goTo("onboarding"), 2200);
       return () => clearTimeout(t);
     }
-  }, []);
+  }, [screen]);
 
   const showNav = ["home","bookings","help","profile"].includes(screen);
   const NAV = [
@@ -1305,14 +1672,22 @@ export default function AgakApp() {
 
               {/* Screens */}
               {screen === "splash"       && <SplashScreen />}
-              {screen === "home"         && <HomeScreen goTo={goTo} openService={openService} />}
+              {screen === "onboarding"   && <OnboardingScreen goTo={goTo} />}
+              {screen === "auth"         && <AuthScreen goTo={goTo} setUser={setUser} user={user} />}
+              {screen === "otp"          && <OtpScreen goTo={goTo} user={user} />}
+              {screen === "name"         && <NameScreen goTo={goTo} setUser={setUser} />}
+              {screen === "location"     && <LocationScreen goTo={goTo} user={user} setUser={setUser} />}
+              {screen === "home"         && <HomeScreen goTo={goTo} openService={openService} user={user} />}
               {screen === "service"      && <ServiceScreen svc={svc} goTo={goTo} setQuickBk={setQuickBk} />}
-              {screen === "booking"      && <BookingScreen svc={svc} goTo={goTo} onPay={total=>{ setPayState("processing"); }} />}
+              {screen === "booking"      && <BookingScreen svc={svc} goTo={goTo} onPay={(total, planName, date)=>{ 
+                setBookings(prev => [{ svc: svc.name, status: `Scheduled · ${date}`, icon: svc.Icon, color: svc.iconBg, id: svc.id, dot: "bg-emerald-400", active: true }, ...prev]);
+                setPayState("processing"); 
+              }} user={user} setUser={setUser} />}
               {screen === "confirmation" && <ConfirmScreen svc={svc} goTo={goTo} setRating={setRating} />}
               {screen === "tracking"     && <TrackingScreen svc={svc} goTo={goTo} />}
-              {screen === "bookings"     && <BookingsScreen goTo={goTo} />}
+              {screen === "bookings"     && <BookingsScreen goTo={goTo} bookings={bookings} />}
               {screen === "help"         && <HelpScreen />}
-              {screen === "profile"      && <ProfileScreen />}
+              {screen === "profile"      && <ProfileScreen goTo={goTo} user={user} bookings={bookings} />}
 
               {/* Overlays */}
               {payState && (
@@ -1359,12 +1734,17 @@ export default function AgakApp() {
         {/* Screen shortcuts */}
         <div className="mt-6 flex flex-wrap gap-2 justify-center max-w-sm">
           {[
-            {label:"🏠 Home",    s:"home",    t:"home"},
-            {label:"🔧 Service", s:"service"},
-            {label:"📅 Booking", s:"booking"},
-            {label:"✅ Confirm", s:"confirmation"},
-            {label:"📍 Track",   s:"tracking"},
-            {label:"📋 Booked",  s:"bookings", t:"bookings"},
+            {label:"✨ Onboarding", s:"onboarding"},
+            {label:"📱 Phone",      s:"auth"},
+            {label:"🔑 OTP",        s:"otp"},
+            {label:"👋 Name",       s:"name"},
+            {label:"📍 Location",   s:"location"},
+            {label:"🏠 Home",       s:"home",   t:"home"},
+            {label:"🔧 Service",    s:"service"},
+            {label:"📅 Booking",    s:"booking"},
+            {label:"✅ Confirm",    s:"confirmation"},
+            {label:"🗺 Track",      s:"tracking"},
+            {label:"📋 Bookings",   s:"bookings", t:"bookings"},
           ].map(({label,s,t})=>(
             <button key={s} onClick={()=>goTo(s,t||null)}
               className="px-3 py-1.5 bg-white text-stone-600 text-xs font-semibold rounded-xl shadow-tile hover:bg-orange-50 hover:text-orange-600 transition-colors">
