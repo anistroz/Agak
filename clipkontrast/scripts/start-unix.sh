@@ -68,4 +68,21 @@ say "Starting ClipKontrast. The first start downloads the speech model (about 48
 say "Your browser opens by itself. Keep this window open while you use ClipKontrast; close it to stop."
 echo
 export CLIPKONTRAST_OPEN_BROWSER=1
+export PYTHONWARNINGS="ignore::DeprecationWarning"
+
+# Already running? Then just open it. Port taken by another program? Then use the next free one.
+open_url() { if command -v open >/dev/null 2>&1; then open "$1"; elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1"; fi; }
+PORT="${CLIPKONTRAST_PORT:-8765}"
+for p in $(seq "$PORT" $((PORT + 9))); do
+  if .venv/bin/python -c "import sys,urllib.request; sys.exit(0 if b'ClipKontrast' in urllib.request.urlopen('http://127.0.0.1:$p/app', timeout=3).read() else 1)" 2>/dev/null; then
+    say "ClipKontrast is already running (in another window). Opening it in your browser."
+    open_url "http://127.0.0.1:$p/app"; exit 0
+  fi
+done
+while ! .venv/bin/python -c "import socket,sys; s=socket.socket(); s.bind(('127.0.0.1',$PORT)); s.close()" 2>/dev/null; do
+  say "Port $PORT is used by another program, trying $((PORT + 1))..."
+  PORT=$((PORT + 1))
+  [ "$PORT" -le 8800 ] || fail "No free port found between 8765 and 8800."
+done
+export CLIPKONTRAST_PORT="$PORT"
 exec .venv/bin/python -m studio.server

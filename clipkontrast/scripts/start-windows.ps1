@@ -90,4 +90,32 @@ Say "Starting ClipKontrast. The first start downloads the speech model (about 48
 Say "Your browser opens by itself. Keep this window open while you use ClipKontrast; close it to stop." "Green"
 Write-Host ""
 $env:CLIPKONTRAST_OPEN_BROWSER = "1"
+$env:PYTHONWARNINGS = "ignore::DeprecationWarning"
+
+# ---- Already running? Then just open it. Port taken by another program? Then use the next free one.
+function Port-Free($p) {
+    try { $l = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $p); $l.Start(); $l.Stop(); return $true }
+    catch { return $false }
+}
+function Is-ClipKontrast($p) {
+    try {
+        $r = Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 -Uri "http://127.0.0.1:$p/app"
+        return ($r.Content -match "ClipKontrast")
+    } catch { return $false }
+}
+$Port = 8765
+if ($env:CLIPKONTRAST_PORT) { $Port = [int]$env:CLIPKONTRAST_PORT }
+for ($p = $Port; $p -lt $Port + 10; $p++) {
+    if (Is-ClipKontrast $p) {
+        Say "ClipKontrast is already running (in another window). Opening it in your browser." "Green"
+        Start-Process "http://127.0.0.1:$p/app"
+        exit 0
+    }
+}
+while (-not (Port-Free $Port)) {
+    Say "Port $Port is used by another program, trying $($Port + 1)..." "Yellow"
+    $Port++
+    if ($Port -gt 8800) { Fail "No free port found between 8765 and 8800. Restart the computer and try again." }
+}
+$env:CLIPKONTRAST_PORT = "$Port"
 & $VPy -m studio.server
