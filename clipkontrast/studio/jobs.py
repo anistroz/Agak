@@ -9,6 +9,8 @@ import threading
 import time
 import traceback
 import uuid
+
+import numpy as np
 from pathlib import Path
 
 from . import brain, config, creators, ctx, facecam, games, load, media, quality, render, roman, safe, transcribe, usage
@@ -513,6 +515,49 @@ def _fetch_piece(job, clip, full_audio):
 
 BLOCK = 10 * 60         # long videos are transcribed and clipped one block at a time
 PROGRESSIVE_FROM = 20 * 60
+SCAN_REGION = 150       # scan mode: seconds of audio listened to around each lively moment
+SCAN_SLICE = 15 * 60    # scan mode: every slice this long gets at least its liveliest moment
+
+
+def _hot_regions(db, max_clips: int) -> list:
+    """Scan mode: the lively parts of a long video, picked from its loudness alone (seconds from its start).
+
+    The liveliest moment of every 15 minutes is taken, so no part of the video is skipped, and then the liveliest
+    moments of the whole video until there are about three for every clip wanted. Only these parts are transcribed,
+    which is far quicker than the whole video, and the AI then picks the best clips out of all of them at once."""
+    n = len(db)
+    if n < SCAN_REGION * 2:
+        return [(0, n)]
+    z = brain.loud_zscore(np.asarray(db, dtype=np.float32))
+    k = 20                                              # how lively the 20 seconds around each second are
+    live = np.convolve(z, np.ones(k) / k, mode="same")
+    half = SCAN_REGION // 2
+    want = max(int(np.ceil(n / SCAN_SLICE)), max_clips * 3)
+    want = min(want, max(1, int(n * 0.45) // SCAN_REGION))      # never more than about half the video
+    picked = []
+
+    def free(c):
+        return all(abs(c - p) >= SCAN_REGION // 2 for p in picked)
+
+    for s in range(0, n, SCAN_SLICE):                  # the liveliest moment of each slice
+        part = live[s: s + SCAN_SLICE]
+        if len(part) >= 30:
+            c = s + int(np.argmax(part))
+            if free(c):
+                picked.append(c)
+    for c in np.argsort(-live):                        # then the liveliest of the whole video
+        if len(picked) >= want:
+            break
+        if free(int(c)):
+            picked.append(int(c))
+    regions = []
+    for c in sorted(picked):
+        a, b = max(0, c - half), min(n, c + half)
+        if regions and a <= regions[-1][1] + 5:        # touching parts are listened to as one
+            regions[-1] = (regions[-1][0], b)
+        else:
+            regions.append((a, b))
+    return regions
 
 
 def _covers(words: list, start: float, end: float) -> bool:
@@ -676,6 +721,17 @@ def _run_job(job):
             yt = None
         job["transcript_from"] = "youtube" if yt else "own"
         job["lang"] = yt[1] if yt else ""          # the language spoken, when YouTube says (decides the captions)
+    # Scan mode (long videos): look over the whole video first, then pick the best clips of all of it at once,
+    # instead of clipping each part as it comes. Without YouTube's transcript only the lively parts are
+    # transcribed, found from the loudness of every second, which is much quicker than the whole video.
+    scan = span > PROGRESSIVE_FROM and job.get("kind") != "live" and o.get("scan", True)
+    if scan and not yt:
+        blocks = [(lo + a * 16000, min(hi, lo + b * 16000)) for a, b in _hot_regions(db, int(o["max_clips"]))]
+    prog_base, acc = [], 0
+    for a_, b_ in blocks:
+        prog_base.append(acc)
+        acc += b_ - a_
+    prog_total = max(1, acc)
     if resuming:
         try:
             words = json.loads((d / "words.json").read_text(encoding="utf-8"))
@@ -704,43 +760,12 @@ def _run_job(job):
             def tp(p, i=i, a_=a_, b_=b_):
                 if now_on[0] == i and p - last[0] > 0.05:      # only the part being shown moves the bar
                     last[0] = p
-                    _set(job, progress=max(job["progress"], 0.14 + 0.78 * ((a_ - lo) + p * (b_ - a_)) / max(1, hi - lo)))
+                    _set(job, progress=max(job["progress"], 0.14 + 0.78 * (prog_base[i] + p * (b_ - a_)) / prog_total))
             heard[i] = ahead.submit(ctx.bind(transcribe.transcribe), audio[a_:b_], tp)
 
-    # The ad breaks and static screens of the whole video, found once. It reads the video end to end,
-    # so it is done here rather than for each clip, and only when asked for.
-    statics = quality.static_ranges(job.get("source_path") or "") if config.SKIP_STATIC else []
-    for bi, (a, b) in enumerate(blocks):
-        if bi < done_blocks:
-            continue                      # transcribed and checked by the AI before the restart
-        shift = a / 16000
-        where = f" (minute {round((a - lo) / 16000 / 60)} of {round(span / 60)})" if len(blocks) > 1 else ""
-        if yt:
-            _set(job, stage="Reading the transcript" + where)
-            bw = [dict(w, s=round(w["s"] - shift, 2), e=round(w["e"] - shift, 2)) for w in yt[0] if a / 16000 <= w["s"] < b / 16000]
-        else:
-            _set(job, stage="Writing the transcript" + where)
-            now_on[0] = bi
-            hear(bi)
-            hear(bi + 1)
-            bw = heard.pop(bi).result()
-        _set(job, progress=max(job["progress"], 0.14 + 0.78 * (b - lo) / max(1, hi - lo)))
-        words += [dict(w, s=round(w["s"] + shift, 2), e=round(w["e"] + shift, 2)) for w in bw]
-        (d / "words.json").write_text(json.dumps(words), encoding="utf-8")
-        _set(job, stage="Finding the best moments" + where, word_count=len(words))
-        left = int(o["max_clips"]) - len(job["clips"])
-        if left <= 0 or len(bw) < 8:
-            job["done_blocks"] = bi + 1
-            save(job)
-            continue
-        quota = max(1, math.ceil(left / (len(blocks) - bi)))
-        s0 = int((a - lo) / 16000)
-        found, ai = brain.find_clips(bw, db[s0: s0 + int((b - a) / 16000) + 1], (b - a) / 16000, job["title"],
-                                     job["uploader"], quota, int(o["min_len"]), int(o["max_len"]), notes.append, game=game)
-        tokens += ai.get("tokens", 0)
-        model = ai.get("model") or model
-        if ai.get("note"):
-            notes.append(ai["note"])
+    def take(found, shift):
+        """Drop clips in ad breaks or static screens, then queue the rest to be made."""
+        nonlocal face
         if found and statics:
             # A commercial or a "be right back" slate is not a clip. Any clip that sits mostly inside one
             # is dropped.
@@ -765,8 +790,63 @@ def _run_job(job):
                 c["facecam"] = face
             job["clips"].append(c)
             futures.append((renders.submit(ctx.bind(make), c, list(words)), c))
+
+    # The ad breaks and static screens of the whole video, found once. It reads the video end to end,
+    # so it is done here rather than for each clip, and only when asked for.
+    statics = quality.static_ranges(job.get("source_path") or "") if config.SKIP_STATIC else []
+    for bi, (a, b) in enumerate(blocks):
+        if bi < done_blocks:
+            continue                      # transcribed and checked by the AI before the restart
+        shift = a / 16000
+        where = f" (minute {round((a - lo) / 16000 / 60)} of {round(span / 60)})" if len(blocks) > 1 else ""
+        if scan and not yt:
+            where = f" (part {bi + 1} of {len(blocks)})"
+        if yt:
+            _set(job, stage="Reading the transcript" + where)
+            bw = [dict(w, s=round(w["s"] - shift, 2), e=round(w["e"] - shift, 2)) for w in yt[0] if a / 16000 <= w["s"] < b / 16000]
+        else:
+            _set(job, stage=("Listening to the lively parts" if scan else "Writing the transcript") + where)
+            now_on[0] = bi
+            hear(bi)
+            hear(bi + 1)
+            bw = heard.pop(bi).result()
+        _set(job, progress=max(job["progress"], 0.14 + 0.78 * (prog_base[bi] + (b - a)) / prog_total))
+        words += [dict(w, s=round(w["s"] + shift, 2), e=round(w["e"] + shift, 2)) for w in bw]
+        (d / "words.json").write_text(json.dumps(words), encoding="utf-8")
+        if scan:                          # the clips are picked once the whole video has been looked over
+            job["done_blocks"] = bi + 1
+            save(job)
+            continue
+        _set(job, stage="Finding the best moments" + where, word_count=len(words))
+        left = int(o["max_clips"]) - len(job["clips"])
+        if left <= 0 or len(bw) < 8:
+            job["done_blocks"] = bi + 1
+            save(job)
+            continue
+        quota = max(1, math.ceil(left / (len(blocks) - bi)))
+        s0 = int((a - lo) / 16000)
+        found, ai = brain.find_clips(bw, db[s0: s0 + int((b - a) / 16000) + 1], (b - a) / 16000, job["title"],
+                                     job["uploader"], quota, int(o["min_len"]), int(o["max_len"]), notes.append, game=game)
+        tokens += ai.get("tokens", 0)
+        model = ai.get("model") or model
+        if ai.get("note"):
+            notes.append(ai["note"])
+        take(found, shift)
         job["ai"] = {"model": model, "tokens": tokens, "note": "", "log": notes[-5:]}
         job["done_blocks"] = bi + 1       # a restart from here on carries on with the next part
+        save(job)
+    if scan and not job["clips"] and words:
+        _set(job, stage="Picking the best moments of the whole video", progress=max(job["progress"], 0.9))
+        base = lo / 16000
+        rel = [dict(w, s=round(w["s"] - base, 2), e=round(w["e"] - base, 2)) for w in words]
+        found, ai = brain.find_clips(rel, db, span, job["title"], job["uploader"], int(o["max_clips"]),
+                                     int(o["min_len"]), int(o["max_len"]), notes.append, game=game)
+        tokens += ai.get("tokens", 0)
+        model = ai.get("model") or model
+        if ai.get("note"):
+            notes.append(ai["note"])
+        take(found, base)
+        job["ai"] = {"model": model, "tokens": tokens, "note": "", "log": notes[-5:]}
         save(job)
     if futures:
         _set(job, stage="Finishing the clips", progress=max(job["progress"], 0.92))
