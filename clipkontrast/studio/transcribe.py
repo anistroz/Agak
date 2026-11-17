@@ -198,8 +198,13 @@ def _chunks(audio: np.ndarray, lo=12.0, hi=24.0):
     frames = n // hop
     if frames == 0:
         return
-    x = audio[: frames * hop].reshape(frames, hop).astype(np.float32)
-    rms = np.sqrt((x ** 2).mean(axis=1))
+    # a block of frames at a time, so a long video does not need a gigabyte of memory at once
+    rms = np.empty(frames, dtype=np.float32)
+    step = 12000                          # ten minutes of 50 ms frames
+    for i in range(0, frames, step):
+        j = min(frames, i + step)
+        x = audio[i * hop: j * hop].reshape(j - i, hop).astype(np.float32)
+        rms[i:j] = np.sqrt((x * x).mean(axis=1))
     pos = 0
     while pos < n:
         if n - pos <= hi * sr:

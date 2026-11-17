@@ -325,6 +325,11 @@ def loudness_per_second(audio: np.ndarray) -> np.ndarray:
     n = len(audio) // 16000
     if n == 0:
         return np.zeros(1, dtype=np.float32)
-    x = audio[: n * 16000].reshape(n, 16000).astype(np.float32) / 32768.0
-    rms = np.sqrt((x ** 2).mean(axis=1) + 1e-10)
-    return (20 * np.log10(rms)).astype(np.float32)
+    # ten minutes at a time: a long video's audio converted all at once needs more than a gigabyte of memory
+    out = np.empty(n, dtype=np.float32)
+    step = 600
+    for i in range(0, n, step):
+        j = min(n, i + step)
+        x = audio[i * 16000: j * 16000].reshape(j - i, 16000).astype(np.float32) / 32768.0
+        out[i:j] = np.sqrt((x * x).mean(axis=1) + 1e-10)
+    return (20 * np.log10(out)).astype(np.float32)
