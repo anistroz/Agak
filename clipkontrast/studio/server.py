@@ -1540,11 +1540,29 @@ def admin_delete_user(request: Request, uid: str, body: dict = Body(...)):
     return {"ok": True}
 
 
+def _open_browser_when_ready():
+    """Open the dashboard in the default browser once the server answers (used by the start scripts)."""
+    import threading, time, urllib.request, webbrowser
+    url = f"http://127.0.0.1:{config.PORT}/app"
+
+    def wait_then_open():
+        for _ in range(600):                 # up to ten minutes: the first start downloads the speech model
+            try:
+                urllib.request.urlopen(url, timeout=2)
+                webbrowser.open(url)
+                return
+            except Exception:
+                time.sleep(1)
+    threading.Thread(target=wait_then_open, daemon=True).start()
+
+
 def main():
     print(f"\n  ClipKontrast is running:  {config.PUBLIC_URL}\n")
     if not config.ACCOUNTS and (config.HTTPS or config.HOST not in ("127.0.0.1", "localhost", "::1")):
         print("  Sign-in is off, so anyone who can reach this address can use ClipKontrast and its AI key.\n"
               "  On a server other people can reach, set CLIPKONTRAST_ACCOUNTS=1 in .env.\n", flush=True)
+    if config.env("CLIPKONTRAST_OPEN_BROWSER") == "1":
+        _open_browser_when_ready()
     if config.env("CLIPKONTRAST_AUTO_RELOAD") == "1":
         # restart by itself whenever the server code changes (pages in web/ never need a restart)
         uvicorn.run("studio.server:app", host=config.HOST, port=config.PORT, log_level="warning", backlog=4096, reload=True,
