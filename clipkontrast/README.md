@@ -1,6 +1,9 @@
 # ClipKontrast
 
 > Based on [PeakCut](https://github.com/haziqahmedqasmi/peakcut) (MIT License). Rebranded and modified as ClipKontrast.
+>
+> Guide by [@anistroz.ai](https://www.instagram.com/anistroz.ai/) (Instagram) and [@anistrozelite](https://www.youtube.com/@anistrozelite) (YouTube).
+> Screenshots ke saath poori guide: folder mein **`SETUP-GUIDE.html`** kholo.
 
 Lambi videos aur live streams se **captions wale vertical clips** (Reels / Shorts / TikTok) banao, apne hi computer pe.
 Free hai, koi sign-in nahi chahiye.

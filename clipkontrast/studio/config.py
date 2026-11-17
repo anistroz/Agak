@@ -162,7 +162,7 @@ ACCOUNTS = env("CLIPKONTRAST_ACCOUNTS", "0") == "1"
 # The two buttons along the top of the dashboard: the project's code, and where to follow its maker (feedback goes
 # there too). Set either to an empty value to hide that button, or point them at your own pages in a fork.
 REPO_URL = env("CLIPKONTRAST_REPO_URL", "https://github.com/anistroz/Agak").strip()
-FOLLOW_URL = env("CLIPKONTRAST_FOLLOW_URL", "https://www.instagram.com/an1stroz/").strip()
+FOLLOW_URL = env("CLIPKONTRAST_FOLLOW_URL", "https://www.instagram.com/anistroz.ai/").strip()
 
 # ---------------------------------------------------------------- limits (per user, and for the whole server)
 # Your own ClipKontrast has no limits unless you set them: 0 (the default) means "none" for every limit below. The
