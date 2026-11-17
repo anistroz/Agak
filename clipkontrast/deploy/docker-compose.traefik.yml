@@ -1,0 +1,22 @@
+# ClipKontrast behind a Traefik that already runs on the server and serves other sites.
+#
+# Use it by adding this line to .env on the server (and leaving COMPOSE_PROFILES=own-https out):
+#   COMPOSE_FILE=docker-compose.yml:deploy/docker-compose.traefik.yml
+#
+# Traefik finds ClipKontrast through these labels, on the network it shares with its other sites, and handles HTTPS.
+services:
+  app:
+    networks: [default, proxy]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK:-proxy}
+      - traefik.http.routers.clipkontrast.rule=Host(`${CLIPKONTRAST_DOMAIN}`)
+      - traefik.http.routers.clipkontrast.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}
+      - traefik.http.routers.clipkontrast.tls=true
+      - traefik.http.routers.clipkontrast.tls.certresolver=${TRAEFIK_CERTRESOLVER:-letsencrypt}
+      - traefik.http.services.clipkontrast.loadbalancer.server.port=8765
+
+networks:
+  proxy:
+    external: true
+    name: ${TRAEFIK_NETWORK:-proxy}
