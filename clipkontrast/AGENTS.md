@@ -42,6 +42,7 @@ are there, and only then offer to delete the old folder. Never delete anything w
 | `studio/media.py` | Downloading (yt-dlp), probing, audio |
 | `studio/auth.py`, `studio/account.py`, `studio/admin.py` | Sign-in, deleting things, the admin dashboard |
 | `studio/db.py` | Database tables (SQLAlchemy core; SQLite or PostgreSQL) |
+| `studio/earn.py` | Earn: paid clipping campaigns, link cross-checks, YouTube view counts, review and payouts (pages: `web/earn.html`, `web/earn-admin.html`) |
 | `web/index.html` | The whole signed-in app, one file, no build step |
 
 ## Rules worth knowing

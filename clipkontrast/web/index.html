@@ -1251,12 +1251,13 @@ function drawShell() {  const nav = (v, icon, label, extra = "") => `<button cla
   put($("#nav"), nav("overview", navIc("home", "overview"), "Home") +
     nav("library", navIc("film", "library"), "All videos", (() => { const w = S.jobs.filter(j => ["queued", "running"].includes(j.status)).length;
       return w ? `<span class="working" title="${w} working now"><i></i>${w} working</span>` : S.jobs.length ? `<span class="count">${S.jobs.length}</span>` : ""; })()) +
+    `<a class="nav-item" href="${esc(S.status.earn_url || "/earn")}" ${S.status.accounts === false ? 'target="_blank" rel="noopener"' : ""} title="Earn: paid clipping campaigns" style="text-decoration:none">${ic("money")}<span class="label">Earn</span><span class="count" style="background:var(--brand);color:var(--brand-ink,#1A2100)">New</span></a>` +
     `<h4><span>Creators</span></h4>` +
     S.creators.map(c => nav("c:" + c.id, cav(c), c.name,
       c.live_job ? `<span class="sb-tag rec" title="Recording now"><i></i>Rec</span>`
         : liveOn(c).length ? `<span class="sb-tag" title="Live on ${esc(liveOn(c).map(([k]) => PLAT[k].name).join(" and "))}"><i></i>Live</span>` : "")).join("") +
     `<button class="nav-item" data-act="newcreator" title="New creator">${ic("plusc")}<span class="label">New creator</span></button>` +
-    (S.status.user?.role === "admin" && S.status.accounts !== false ? `<h4><span>Owner</span></h4><a class="nav-item" href="/admin" title="Admin dashboard" style="text-decoration:none">${ic("shield")}<span class="label">Admin dashboard</span></a>` : ""));
+    (S.status.user?.role === "admin" && S.status.accounts !== false ? `<h4><span>Owner</span></h4><a class="nav-item" href="/admin" title="Admin dashboard" style="text-decoration:none">${ic("shield")}<span class="label">Admin dashboard</span></a><a class="nav-item" href="/admin/earn" title="Earn campaigns" style="text-decoration:none">${ic("money")}<span class="label">Earn campaigns</span></a>` : ""));
   const st = S.status;
   const k = S.status.ai;
   put($("#foot"), (k ? `<button class="ai-card ${S.view === "usage" ? "on" : ""}" data-act="go" data-v="usage" title="${k.ready ? `AI: ${esc(k.provider || "ready")}, ${k.today_calls || 0} calls today` : "The AI is not set up"}">
@@ -1694,6 +1695,7 @@ function clipHtml(j, c) {
         ${busyClip ? "" : `<label class="selck" title="Select this clip"><input type="checkbox" data-sel="${key}" ${sel().has(key) ? "checked" : ""} aria-label="Select this clip"></label>`}
         ${c.status === "done" ? `<a class="btn sm icon ghost" href="${m}${esc(c.file)}?download=1" title="Download" aria-label="Download">${ic("down")}</a>` : ""}
         <button class="btn sm icon ghost" data-act="copy" ${a} title="Copy post text" aria-label="Copy post text">${ic("copy")}</button>
+        <button class="btn sm icon ghost" data-act="tocampaign" ${a} title="Send to a paid campaign" aria-label="Send to a paid campaign">${ic("money")}</button>
         ${busyClip ? "" : `<button class="btn sm icon ghost" data-act="delclip" ${a} title="Delete this clip" aria-label="Delete this clip">${ic("trash")}</button>`}
         <span class="grow"></span>
         ${c.status === "done" ? `<button class="btn sm" data-act="openclip" ${a}>${ic("send")}Post</button>` : ""}
@@ -2159,7 +2161,8 @@ function drawClipDlg(full) {
           : `<p class="help">No accounts connected yet. Connect one in Settings.</p>`}
         <div class="row" style="margin-top:auto;padding-top:8px;border-top:1px solid var(--line)">
           ${c.status === "done" ? `<a class="btn" href="${m}${esc(c.file)}?download=1">${ic("down")}Download</a>` : ""}
-          <button class="btn" data-act="copy" data-j="${j.id}" data-c="${esc(c.id)}">${ic("copy")}Copy post text</button></div>
+          <button class="btn" data-act="copy" data-j="${j.id}" data-c="${esc(c.id)}">${ic("copy")}Copy post text</button>
+          <button class="btn" data-act="tocampaign" data-j="${j.id}" data-c="${esc(c.id)}" title="Posted this clip? Send its link to a paid campaign">${ic("money")}Send to a campaign</button></div>
       </div></div>`;
   } else if (D.sig !== sig) $("#stage").innerHTML = stage;
   D.sig = sig;
@@ -2330,6 +2333,16 @@ document.addEventListener("click", async e => {
     if (a === "copy") {
       const c = jobOf(d.j).clips.find(x => x.id === d.c);
       await navigator.clipboard.writeText(`${c.title}\n\n${c.description}\n\n${(c.hashtags || []).map(h => "#" + h).join(" ")}`); return toast("Post text copied", "ok");
+    }
+    if (a === "tocampaign") {
+      // the clip's posted link goes to the Earn website, where it is checked and paid
+      const c = jobOf(d.j).clips.find(x => x.id === d.c);
+      const posted = Object.values(c.posts || {}).map(p => p.url).filter(Boolean);
+      const url = posted[0] || prompt("Paste the link to this clip after you posted it (YouTube Short, Instagram reel, X or TikTok post):", "");
+      if (!url || !url.trim()) return;
+      const base = S.status.earn_url || "/earn";
+      window.open(base + "#submit=" + encodeURIComponent(url.trim()), "_blank", "noopener");
+      return toast("Opening Earn to send this clip", "ok");
     }
     if (a === "logout") { await api("/api/auth/logout", {method:"POST"}); location.href = "/"; return; }
     if (a === "pwsave") {

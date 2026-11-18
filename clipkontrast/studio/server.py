@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Redirect
 
 from . import admin as admins
 from . import account, load
-from . import (accounts, ai, alerts, auth, config, creators, ctx, db, jobs, live, media, posting,
+from . import (accounts, ai, alerts, auth, config, creators, ctx, db, earn, jobs, live, media, posting,
                profiles, render, safe, transcribe, usage)
 
 from . import tools as _tools  # noqa: E402
@@ -36,9 +36,11 @@ def _quiet(fn):
 
 app = FastAPI(title="ClipKontrast", docs_url=None, redoc_url=None, openapi_url=None)
 WEB = config.ROOT / "web"
-OPEN = ("/api/auth/", "/pub/", "/api/public", "/auth/google/", "/auth/verify", "/brand/", "/assets/", "/healthz", "/favicon.ico", "/robots.txt", "/sitemap.xml")
+OPEN = ("/api/auth/", "/pub/", "/api/public", "/api/earn/public/", "/earn/cover/", "/auth/google/", "/auth/verify", "/brand/", "/assets/", "/healthz", "/favicon.ico", "/robots.txt", "/sitemap.xml")
+# On an Earn-only website these are the only addresses people other than admins may change things through.
+EARN_ONLY_WRITES = ("/api/auth/", "/api/earn/", "/api/account/delete", "/api/notifications/", "/api/feedback")
 PAGES = {"/": "landing.html", "/login": "auth.html", "/signup": "auth.html", "/reset": "reset.html",
-         "/privacy": "legal.html", "/terms": "legal.html", "/acceptable-use": "legal.html"}
+         "/privacy": "legal.html", "/terms": "legal.html", "/acceptable-use": "legal.html", "/earn": "earn.html"}
 VIDEO_TYPES = {".mp4", ".mov", ".mkv", ".webm", ".m4v", ".ts", ".flv"}
 CSP = ("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
        "font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; "
@@ -72,6 +74,7 @@ def _startup():
     jobs.start()
     live.start()
     posting.start()
+    earn.start()                     # keeps YouTube view counts of campaign clips fresh
     from . import updates
     updates.start()                  # looks for a newer ClipKontrast every minute, in the background
 
@@ -103,6 +106,8 @@ class Gate:
             piece = method == "PUT" and path.startswith("/api/upload/")
             cap = ((min(config.MAX_UPLOAD_MB, config.UPLOAD_PART_MB) if piece else config.MAX_UPLOAD_MB) + 8) * 1024 * 1024 \
                 if path == "/api/upload" or piece else 256 * 1024
+            if re.fullmatch(r"/api/((admin/)?earn/submissions/\d+/proof|admin/earn/campaigns/[\w\-]+/cover)", path):
+                cap = 9 * 1024 * 1024          # a screenshot or a campaign cover
             try:
                 if int(req.headers.get("content-length") or 0) > cap:
                     return await deny(413, f"That file is too big. The limit is {config.MAX_UPLOAD_MB} MB." if path == "/api/upload" else "That request is too large.")
@@ -151,6 +156,11 @@ class Gate:
             return await deny(401, "Please sign in.")
         if user and path in ("/login", "/signup"):
             return await deny(303, "", redirect="/app")
+        # This lists what is allowed rather than what is refused, so a new clip-studio route stays closed here by default
+        # (creators, settings and alerts would otherwise make this computer fetch channels or send messages for anyone).
+        if (config.EARN_ONLY and user and not user.is_admin and method not in ("GET", "HEAD")
+                and path.startswith("/api/") and not path.startswith(EARN_ONLY_WRITES)):
+            return await deny(403, "Clip-making runs on your own computer here. Download the free ClipKontrast clip studio from the Earn page, make your clips, then send the links back to earn.")
         scope.setdefault("state", {})["user"] = user
         if user and path in ("/api/upload", "/api/upload/start") and method == "POST":
             # decided before a single byte of the file is accepted: verified, has a free slot, has disk space
@@ -259,7 +269,10 @@ def _ip(request: Request) -> str:
     fwd = request.headers.get("x-forwarded-for", "")
     peer = (fwd.split(",")[-1].strip() if fwd and config.env("CLIPKONTRAST_TRUST_PROXY") else "") or (request.client.host if request.client else "")
     named = config.env("CLIPKONTRAST_CLIENT_IP_HEADER")
-    if named and request.headers.get(named) and _from_cdn(peer):
+    # Behind a Cloudflare Tunnel, every request arrives from cloudflared on this same machine, so the header is
+    # believed when the connection comes from this machine itself and CLIPKONTRAST_TUNNEL=1 says a tunnel is in use.
+    local = config.env("CLIPKONTRAST_TUNNEL") == "1" and peer in ("127.0.0.1", "::1")
+    if named and request.headers.get(named) and (local or _from_cdn(peer)):
         return request.headers[named].split(",")[0].strip()[:64]
     return peer
 
@@ -327,7 +340,7 @@ def landing():
     f = WEB / "landing.html"
     m = f.stat().st_mtime
     if _LANDING.get("m") != m:
-        html = f.read_text(encoding="utf-8").replace("{{SITE}}", config.PUBLIC_URL)
+        html = f.read_text(encoding="utf-8").replace("{{SITE}}", config.PUBLIC_URL).replace("{{DOWNLOAD}}", config.DOWNLOAD_URL)
         _LANDING.update(m=m, html=html, etag='"' + hashlib.md5(html.encode()).hexdigest() + '"')
     # fresh for five minutes; after that a CDN or browser may show its copy while it quietly fetches the new one
     return HTMLResponse(_LANDING["html"], headers={"Cache-Control": "public, max-age=300, stale-while-revalidate=86400",
@@ -344,7 +357,7 @@ def robots():
 @app.get("/sitemap.xml")
 def sitemap():
     day = time.strftime("%Y-%m-%d")
-    pages = [("/", "1.0", "weekly"), ("/signup", "0.8", "monthly"), ("/login", "0.4", "monthly"), ("/terms", "0.3", "yearly"),
+    pages = [("/", "1.0", "weekly"), ("/earn", "0.9", "daily"), ("/signup", "0.8", "monthly"), ("/login", "0.4", "monthly"), ("/terms", "0.3", "yearly"),
              ("/privacy", "0.3", "yearly"), ("/acceptable-use", "0.2", "yearly")]
     body = "".join(f"<url><loc>{config.PUBLIC_URL}{u}</loc><lastmod>{day}</lastmod><changefreq>{c}</changefreq>"
                    f"<priority>{p}</priority></url>" for u, p, c in pages)
@@ -396,9 +409,28 @@ _LEGAL_HTML = ""
 
 @app.get("/app")
 @app.get("/app/{rest:path}")
-def app_page(rest: str = ""):
-    """Every app address (/app/videos, /app/creators/<id>/setup ...) is the same page; it shows the right view."""
+def app_page(request: Request, rest: str = ""):
+    """Every app address (/app/videos, /app/creators/<id>/setup ...) is the same page; it shows the right view.
+    On an Earn-only website the clip studio is the free download, so everyone but admins goes to Earn."""
+    u = getattr(request.state, "user", None)
+    if config.EARN_ONLY and not (u and u.is_admin):
+        return RedirectResponse("/earn#me", 303)
     return _page("index.html")
+
+
+@app.get("/admin/earn")
+@app.get("/admin/earn/{rest:path}")
+def admin_earn_page(request: Request, rest: str = ""):
+    _admin(request)
+    return _page("earn-admin.html")
+
+
+@app.get("/earn")
+def earn_page():
+    # The downloaded app has no shared database, so its Earn button goes to the public Earn website.
+    if not config.ACCOUNTS and config.env("CLIPKONTRAST_LOCAL_EARN") != "1":
+        return RedirectResponse(config.EARN_URL + "/earn", 303)
+    return _page("earn.html", shared=True)
 
 
 @app.get("/admin")
@@ -438,7 +470,8 @@ def favicon():
 @app.get("/api/public")
 def public_config():
     from . import mailer
-    return {"google": auth.google_ready(), "mail": mailer.ready(), "verify_email": config.VERIFY_EMAIL}
+    return {"google": auth.google_ready(), "mail": mailer.ready(), "verify_email": config.VERIFY_EMAIL,
+            "earn_only": config.EARN_ONLY, "download_url": config.DOWNLOAD_URL}
 
 
 def _signed_in(request: Request, user, first: bool, redirect=None):
@@ -576,6 +609,7 @@ def status(request: Request):
     me_ = _me(request)
     return {"user": auth.public(me_), "update": updates.latest() if me_.is_admin else None, "accounts": config.ACCOUNTS, "disk_full": load.disk_full(), "no_ffmpeg": bool(_tools.missing()), "links": {"repo": config.REPO_URL, "follow": config.FOLLOW_URL}, "ai": usage.brief(), "unread": notices.unread(),
             "tour": not accounts.settings()["tour_done"],
+            "earn_url": "/earn" if config.ACCOUNTS else config.EARN_URL + "/earn", "earn_only": config.EARN_ONLY,
             "youtube": accounts.youtube_ready(), "connect": {p: accounts.can_connect(p) for p in accounts.PLATFORM_NAMES}, "max_upload_mb": config.MAX_UPLOAD_MB, "upload_part_mb": config.UPLOAD_PART_MB, "max_batch": config.MAX_ACTIVE_JOBS_PER_USER,
             "styles": {k: v["label"] for k, v in render.STYLES.items()}, "layouts": render.LAYOUTS}
 
@@ -1388,7 +1422,13 @@ def public_clip(token: str):
 def _on_this_computer(request: Request) -> bool:
     """Is the person sitting at the computer ClipKontrast runs on? Only then can a folder window be opened for them."""
     host = request.client.host if request.client else ""
-    return host in ("127.0.0.1", "::1", "localhost") and not config.env("CLIPKONTRAST_TRUST_PROXY")
+    if host not in ("127.0.0.1", "::1", "localhost") or config.env("CLIPKONTRAST_TRUST_PROXY"):
+        return False
+    # A tunnel (Cloudflare) running on this same computer also connects from 127.0.0.1, so a request from anywhere on
+    # the internet would look local. The tunnel always adds its own headers, which a browser here never sends.
+    named = (config.env("CLIPKONTRAST_CLIENT_IP_HEADER") or "").strip().lower()
+    proxied = ("cf-connecting-ip", "cf-ray", "x-forwarded-for", "x-real-ip", "forwarded") + ((named,) if named else ())
+    return not any(request.headers.get(h) for h in proxied)
 
 
 @app.get("/api/storage")
@@ -1554,6 +1594,204 @@ def _open_browser_when_ready():
             except Exception:
                 time.sleep(1)
     threading.Thread(target=wait_then_open, daemon=True).start()
+
+
+# ================================================================ Earn: paid clipping campaigns
+def _earn(fn, *a, **k):
+    """Runs an Earn action; problems the person can fix come back as a plain message."""
+    try:
+        return fn(*a, **k)
+    except earn.EarnError as e:
+        raise HTTPException(400, str(e))
+
+
+def _uid_or_none(request: Request) -> str:
+    u = getattr(request.state, "user", None)
+    return u.id if u else ""
+
+
+@app.get("/earn/cover/{cid}.jpg")
+def earn_cover(cid: str):
+    f = earn.COVERS / f"{cid}.jpg"
+    if not re.fullmatch(r"[\w\-]{3,30}", cid) or not f.is_file():
+        raise HTTPException(404)
+    return FileResponse(f, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=86400"})
+
+
+@app.get("/api/earn/public/overview")
+def earn_overview(request: Request):
+    me_ = getattr(request.state, "user", None)
+    return {"overview": earn.overview(), "campaigns": earn.campaigns(uid=_uid_or_none(request)), "leaderboard": earn.leaderboard(),
+            "user": auth.public(me_) if me_ else None, "accounts": config.ACCOUNTS,
+            "earn_only": config.EARN_ONLY, "download_url": config.DOWNLOAD_URL}
+
+
+@app.get("/api/earn/public/campaigns/{key}")
+def earn_campaign(request: Request, key: str):
+    return _earn(earn.campaign, key, uid=_uid_or_none(request))
+
+
+@app.get("/api/earn/me")
+def earn_me(request: Request):
+    return earn.mine(_me(request).id)
+
+
+@app.put("/api/earn/profile")
+def earn_profile(request: Request, body: dict = Body(...)):
+    return _earn(earn.save_profile, _me(request).id, body)
+
+
+@app.post("/api/earn/campaigns/{key}/join")
+def earn_join(request: Request, key: str):
+    _need_verified()
+    return _earn(earn.join, _me(request).id, key)
+
+
+@app.post("/api/earn/submissions")
+def earn_submit(request: Request, body: dict = Body(...)):
+    _need_verified()
+    try:
+        auth.throttle("earn-submit:" + _me(request).id, 40, 3600)
+    except auth.AuthError:
+        raise HTTPException(429, "That's a lot of clips in one hour. Wait a bit, then send the rest.")
+    return _earn(earn.submit, _me(request).id, str(body.get("campaign", "")), str(body.get("url", "")), str(body.get("note", "")))
+
+
+@app.delete("/api/earn/submissions/{sid}")
+def earn_withdraw(request: Request, sid: int):
+    _earn(earn.withdraw, _me(request).id, sid)
+    return {"ok": True}
+
+
+@app.post("/api/earn/submissions/{sid}/proof")
+async def earn_proof(request: Request, sid: int, file: UploadFile = File(...)):
+    data = await file.read(9 * 1024 * 1024)
+    uid = _me(request).id
+    return await run_in_threadpool(_earn, earn.save_proof, uid, sid, data)
+
+
+@app.get("/api/earn/proof/{sid}")
+def earn_proof_file(request: Request, sid: int):
+    u = _me(request)
+    p = _earn(earn.proof_path, sid, u.id, bool(u.is_admin))
+    return FileResponse(p, media_type="image/jpeg", headers={"Cache-Control": "private, max-age=300"})
+
+
+@app.get("/api/admin/earn/summary")
+def earn_admin_summary(request: Request):
+    _admin(request)
+    return earn.admin_summary()
+
+
+@app.get("/api/admin/earn/campaigns")
+def earn_admin_campaigns(request: Request):
+    _admin(request)
+    return earn.campaigns(admin=True)
+
+
+@app.post("/api/admin/earn/campaigns")
+def earn_admin_create(request: Request, body: dict = Body(...)):
+    _admin(request)
+    return _earn(earn.save_campaign, body)
+
+
+@app.put("/api/admin/earn/campaigns/{cid}")
+def earn_admin_update(request: Request, cid: str, body: dict = Body(...)):
+    _admin(request)
+    return _earn(earn.save_campaign, body, cid)
+
+
+@app.delete("/api/admin/earn/campaigns/{cid}")
+def earn_admin_delete(request: Request, cid: str):
+    _admin(request)
+    _earn(earn.delete_campaign, cid)
+    return {"ok": True}
+
+
+@app.post("/api/admin/earn/campaigns/{cid}/cover")
+async def earn_admin_cover(request: Request, cid: str, file: UploadFile = File(...)):
+    _admin(request)
+    data = await file.read(9 * 1024 * 1024)
+    await run_in_threadpool(_earn, earn.save_cover, cid, data)
+    return _earn(earn.campaign, cid, admin=True)
+
+
+@app.get("/api/admin/earn/submissions")
+def earn_admin_queue(request: Request, campaign: str = "", status: str = "pending", q: str = ""):
+    _admin(request)
+    return earn.review_queue(campaign, status, q)
+
+
+@app.post("/api/admin/earn/submissions/bulk")
+def earn_admin_bulk(request: Request, body: dict = Body(...)):
+    _admin(request)
+    done, problems = 0, []
+    for sid in [int(x) for x in (body.get("ids") or [])][:500]:
+        try:
+            earn.decide(sid, str(body.get("action", "")), str(body.get("note", "")))
+            done += 1
+        except earn.EarnError as e:
+            problems.append(f"#{sid}: {e}")
+    return {"done": done, "problems": problems[:20]}
+
+
+@app.post("/api/admin/earn/submissions/{sid}")
+def earn_admin_decide(request: Request, sid: int, body: dict = Body(...)):
+    _admin(request)
+    return _earn(earn.decide, sid, str(body.get("action", "")), str(body.get("note", "")), body.get("views"))
+
+
+@app.post("/api/admin/earn/submissions/{sid}/views")
+def earn_admin_views(request: Request, sid: int, body: dict = Body(...)):
+    _admin(request)
+    return _earn(earn.set_views, sid, body.get("views"))
+
+
+@app.post("/api/admin/earn/submissions/{sid}/proof")
+async def earn_admin_proof(request: Request, sid: int, file: UploadFile = File(...)):
+    u = _admin(request)
+    data = await file.read(9 * 1024 * 1024)
+    return await run_in_threadpool(_earn, earn.save_proof, u.id, sid, data, True)
+
+
+@app.post("/api/admin/earn/refresh")
+def earn_admin_refresh(request: Request, body: dict = Body(default={})):
+    _admin(request)
+    if not earn.youtube_key():
+        raise HTTPException(400, "Add a YouTube API key in Earn settings first.")
+    return {"updated": _earn(earn.refresh_views, [int(x) for x in (body.get("ids") or [])] or None)}
+
+
+@app.get("/api/admin/earn/owed")
+def earn_admin_owed(request: Request):
+    _admin(request)
+    return {"owed": earn.owed(), "payouts": earn.payouts()}
+
+
+@app.get("/api/admin/earn/owed.csv")
+def earn_admin_owed_csv(request: Request):
+    _admin(request)
+    return Response(earn.owed_csv(), media_type="text/csv",
+                    headers={"Content-Disposition": f'attachment; filename="clipkontrast-payouts-{time.strftime("%Y-%m-%d")}.csv"'})
+
+
+@app.post("/api/admin/earn/payouts")
+def earn_admin_pay(request: Request, body: dict = Body(...)):
+    u = _admin(request)
+    return _earn(earn.mark_paid, str(body.get("user_id", "")), str(body.get("ref", "")), u.id)
+
+
+@app.get("/api/admin/earn/settings")
+def earn_admin_settings(request: Request):
+    _admin(request)
+    return earn.public_settings()
+
+
+@app.put("/api/admin/earn/settings")
+def earn_admin_save_settings(request: Request, body: dict = Body(...)):
+    _admin(request)
+    return _earn(earn.save_settings, str(body.get("youtube_key", "")))
+
 
 
 def main():

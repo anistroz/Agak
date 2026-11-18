@@ -112,6 +112,90 @@ admin_log = sa.Table(                                                         # 
 )
 
 
+# ---------------------------------------------------------------- Earn: paid clipping campaigns
+earn_campaigns = sa.Table(                                                    # one campaign a creator or brand pays for
+    "earn_campaigns", meta,
+    sa.Column("id", sa.String(24), primary_key=True),
+    sa.Column("slug", sa.String(60), nullable=False, unique=True),
+    sa.Column("title", sa.String(120), nullable=False),
+    sa.Column("creator_name", sa.String(120), nullable=False, server_default=""),
+    sa.Column("creator_url", sa.String(300), nullable=False, server_default=""),
+    sa.Column("tagline", sa.String(200), nullable=False, server_default=""),
+    sa.Column("brief", sa.Text, nullable=False, server_default=""),
+    sa.Column("rules", sa.Text, nullable=False, server_default=""),           # one rule per line
+    sa.Column("sources", sa.Text, nullable=False, server_default=""),         # one link per line: streams, VODs, drive folders
+    sa.Column("platforms", sa.String(80), nullable=False, server_default="youtube,instagram,x"),
+    sa.Column("required_tag", sa.String(80), nullable=False, server_default=""),   # must appear in the caption, e.g. @creator
+    sa.Column("category", sa.String(40), nullable=False, server_default="Gaming"),
+    sa.Column("rate_per_1k", sa.Float, nullable=False, server_default="0"),   # rupees per 1,000 verified views
+    sa.Column("min_views", sa.Integer, nullable=False, server_default="0"),   # clips under this earn nothing
+    sa.Column("max_per_clip", sa.Float, nullable=False, server_default="0"),  # 0 = no cap
+    sa.Column("budget", sa.Float, nullable=False, server_default="0"),        # the most that will ever be paid out
+    sa.Column("hold_days", sa.Integer, nullable=False, server_default="7"),   # views are counted this many days after posting
+    sa.Column("status", sa.String(10), nullable=False, server_default="draft"),    # draft | live | paused | ended
+    sa.Column("starts_at", sa.Float),
+    sa.Column("ends_at", sa.Float),
+    sa.Column("has_cover", sa.Boolean, nullable=False, server_default=sa.false()),
+    sa.Column("accent", sa.String(9), nullable=False, server_default="#C6F432"),
+    sa.Column("created_at", sa.Float, nullable=False),
+    sa.Column("updated_at", sa.Float, nullable=False),
+)
+earn_profiles = sa.Table(                                                     # a clipper's payout details and handles
+    "earn_profiles", meta,
+    sa.Column("user_id", sa.String(40), sa.ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
+    sa.Column("display_name", sa.String(60), nullable=False, server_default=""),
+    sa.Column("whatsapp", sa.String(24), nullable=False, server_default=""),
+    sa.Column("upi", sa.String(80), nullable=False, server_default=""),
+    sa.Column("youtube", sa.String(80), nullable=False, server_default=""),
+    sa.Column("instagram", sa.String(80), nullable=False, server_default=""),
+    sa.Column("x", sa.String(80), nullable=False, server_default=""),
+    sa.Column("tiktok", sa.String(80), nullable=False, server_default=""),
+    sa.Column("city", sa.String(60), nullable=False, server_default=""),
+    sa.Column("updated_at", sa.Float, nullable=False),
+)
+earn_members = sa.Table(                                                      # who joined which campaign
+    "earn_members", meta,
+    sa.Column("campaign_id", sa.String(24), sa.ForeignKey("earn_campaigns.id", ondelete="CASCADE"), primary_key=True),
+    sa.Column("user_id", sa.String(40), sa.ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
+    sa.Column("joined_at", sa.Float, nullable=False),
+)
+earn_submissions = sa.Table(                                                  # one posted clip, sent in for payment
+    "earn_submissions", meta,
+    sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
+    sa.Column("campaign_id", sa.String(24), sa.ForeignKey("earn_campaigns.id", ondelete="CASCADE"), nullable=False, index=True),
+    sa.Column("user_id", sa.String(40), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True),
+    sa.Column("platform", sa.String(12), nullable=False),                     # youtube | instagram | x | tiktok
+    sa.Column("url", sa.String(400), nullable=False),
+    sa.Column("video_key", sa.String(80), nullable=False),                    # platform:id, the same clip sent twice is refused
+    sa.Column("note", sa.String(300), nullable=False, server_default=""),
+    sa.Column("submitted_at", sa.Float, nullable=False),
+    sa.Column("posted_at", sa.Float),                                         # from the platform when it can tell us
+    sa.Column("views", sa.Integer, nullable=False, server_default="0"),
+    sa.Column("views_at", sa.Float),
+    sa.Column("views_source", sa.String(10), nullable=False, server_default=""),   # api | manual
+    sa.Column("checks", sa.Text, nullable=False, server_default="{}"),        # what the automatic cross-check found (JSON)
+    sa.Column("has_proof", sa.Boolean, nullable=False, server_default=sa.false()),
+    sa.Column("status", sa.String(10), nullable=False, server_default="pending", index=True),  # pending | approved | rejected | paid
+    sa.Column("amount", sa.Float, nullable=False, server_default="0"),        # fixed when approved
+    sa.Column("review_note", sa.String(300), nullable=False, server_default=""),
+    sa.Column("reviewed_at", sa.Float),
+    sa.Column("payout_id", sa.Integer),
+    sa.UniqueConstraint("campaign_id", "video_key", name="earn_one_clip_once"),
+)
+earn_payouts = sa.Table(                                                      # money sent to a clipper
+    "earn_payouts", meta,
+    sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
+    sa.Column("user_id", sa.String(40), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True),
+    sa.Column("amount", sa.Float, nullable=False),
+    sa.Column("method", sa.String(20), nullable=False, server_default="UPI"),
+    sa.Column("ref", sa.String(80), nullable=False, server_default=""),       # UTR or transaction id
+    sa.Column("upi", sa.String(80), nullable=False, server_default=""),
+    sa.Column("clips", sa.Integer, nullable=False, server_default="0"),
+    sa.Column("created_at", sa.Float, nullable=False),
+    sa.Column("admin_id", sa.String(40), nullable=False, server_default=""),
+)
+
+
 def init():
     meta.create_all(engine)
 

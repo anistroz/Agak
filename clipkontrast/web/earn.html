@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earn with ClipKontrast: get paid to clip creators</title>
+<meta name="description" content="Join paid clipping campaigns on ClipKontrast. Clip streams from top creators, post Shorts, Reels and X clips from your own accounts, and get paid per 1,000 views straight to UPI.">
+<meta name="theme-color" content="#1E1612">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClipKontrast">
+<meta property="og:title" content="Earn with ClipKontrast: get paid to clip">
+<meta property="og:description" content="Paid clipping campaigns. Post clips, get paid per 1,000 views, straight to UPI.">
+<link rel="icon" type="image/svg+xml" href="/brand/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
+<script src="/assets/gradient-ascii.js" defer></script>
+<style>
+:root{--brand:#C6F432;--brand-hi:#D4FA5A;--ink:#1A2100;--soft:#F5FDE0;--line-b:#E3F7A8;--deep:#4E6B00;
+  --frame:#1E1612;--frame-2:#2C221D;--frame-3:#382B25;--frame-line:rgba(255,255,255,.09);--frame-text:#F4EEEA;--frame-dim:#A99A91;
+  --muted:#F7F4F1;--line:#EEE8E4;--line-2:#E1D9D3;--text:#211813;--dim:#6D6159;--faint:#A0948C;
+  --good:#0F8A57;--good-soft:#E6F6EE;--bad:#D3343F;--bad-soft:#FDECEE;--warn:#B86E00;--warn-soft:#FFF4E0;
+  --r-lg:18px;--r:12px;--r-sm:8px;--ease:cubic-bezier(.2,.7,.2,1);color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+[id]{scroll-margin-top:80px}
+body{margin:0;background:#fff;color:var(--text);font:16px/1.55 "Geist","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4,p{margin:0}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+svg{width:18px;height:18px;flex:none;fill:currentColor}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+::selection{background:var(--line-b)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.mono{font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:var(--r);border:1px solid var(--line-2);background:#fff;color:var(--text);
+  font-weight:600;font-size:15px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.btn:hover{background:var(--muted);border-color:#D4CAC3}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--ink)}.btn.primary:hover{background:var(--brand-hi);border-color:var(--brand-hi)}
+.btn.dark{background:var(--frame);border-color:var(--frame);color:#fff}.btn.dark:hover{background:var(--frame-3);border-color:var(--frame-3)}
+.btn.ghost-d{background:transparent;border-color:var(--frame-line);color:var(--frame-text)}.btn.ghost-d:hover{background:var(--frame-2);border-color:rgba(255,255,255,.18)}
+.btn.sm{height:36px;padding:0 14px;font-size:14px}
+.btn.xs{height:30px;padding:0 10px;font-size:13px;border-radius:8px}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.kicker{font-size:14px;font-weight:600;color:var(--deep);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.kicker i{width:6px;height:6px;border-radius:50%;background:var(--brand);display:inline-block}
+h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.04em;line-height:1.05;font-weight:650;color:var(--ink)}
+h2 span{color:var(--faint)}
+.sub{color:var(--dim);font-size:16px;margin-top:12px;max-width:620px}
+section{padding:80px 0;position:relative}
+.js .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
+.js .reveal.in{opacity:1;transform:none}
+@keyframes pulse{50%{opacity:.3}}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* nav */
+header.nav{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid transparent;transition:border-color .2s ease}
+header.nav.stuck{border-color:var(--line)}
+header.nav .wrap{display:flex;align-items:center;gap:20px;height:62px}
+header.nav img{height:38px;display:block}
+header.nav nav{display:flex;gap:2px;flex:1;justify-content:center;font-size:15px;font-weight:500}
+header.nav nav a{text-decoration:none;color:var(--dim);padding:8px 13px;border-radius:var(--r);transition:color .15s ease,background-color .15s ease}
+header.nav nav a:hover{color:var(--text);background:var(--muted)}
+header.nav nav a.on{color:var(--ink);background:var(--soft)}
+header.nav .right{display:flex;align-items:center;gap:8px}
+header.nav .signin{text-decoration:none;font-weight:500;font-size:15px;padding:8px 12px;border-radius:var(--r);transition:background-color .15s ease}
+header.nav .signin:hover{background:var(--muted)}
+header.nav .btn{height:40px;border-radius:999px}
+.badge-new{font-size:10px;font-weight:700;background:var(--brand);color:var(--ink);padding:2px 6px;border-radius:999px;margin-left:4px;vertical-align:2px}
+
+/* hero */
+.hero{background:var(--frame);color:var(--frame-text);position:relative;overflow:hidden;padding:72px 0 0}
+.hero .ga{position:absolute;inset:0;pointer-events:none;opacity:.9;-webkit-mask-image:linear-gradient(180deg,transparent,#000 20%,#000 70%,transparent);mask-image:linear-gradient(180deg,transparent,#000 20%,#000 70%,transparent)}
+.hero-in{position:relative;z-index:2;display:grid;grid-template-columns:1.12fr .88fr;gap:48px;align-items:center}
+.pill-live{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--frame-line);background:var(--frame-2);border-radius:999px;padding:6px 14px 6px 8px;font-size:14px;color:var(--frame-text);text-decoration:none;transition:border-color .15s ease}
+.pill-live:hover{border-color:rgba(198,244,50,.5)}
+.pill-live b{display:inline-flex;align-items:center;gap:6px;background:var(--brand);color:var(--ink);font-size:12px;padding:3px 9px;border-radius:999px}
+.pill-live b i{width:6px;height:6px;border-radius:50%;background:var(--ink);animation:pulse 1.3s infinite}
+.hero h1{font-size:clamp(44px,6.6vw,88px);line-height:.95;letter-spacing:-.055em;font-weight:700;color:#fff;margin:22px 0 22px}
+.hero h1 .hl{color:var(--ink);background:var(--brand);padding:0 .14em;border-radius:.16em;display:inline-block;line-height:1.02}
+.hero .lede{font-size:18px;color:var(--frame-dim);max-width:540px}
+.hero .lede b{color:var(--frame-text);font-weight:600}
+.hero .ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+.hero .ctas .btn{height:52px;padding:0 24px;border-radius:999px;font-size:16px}
+.ticker{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--frame-line);border:1px solid var(--frame-line);border-radius:var(--r-lg);overflow:hidden;margin-top:56px;position:relative;z-index:2}
+.ticker div{background:var(--frame);padding:20px 22px}
+.ticker b{display:block;font-size:clamp(24px,2.6vw,34px);letter-spacing:-.04em;color:#fff;font-weight:650;line-height:1.1}
+.ticker b.lime{color:var(--brand)}
+.ticker span{font-size:13px;color:var(--frame-dim)}
+.stage{position:relative;justify-self:center;width:100%;max-width:400px;aspect-ratio:4/5}
+.stage .ph{position:absolute;left:50%;top:0;transform:translateX(-50%);width:62%;aspect-ratio:9/16;border-radius:26px;overflow:hidden;border:7px solid #0f0b09;background:#0f0b09}
+.stage .ph video{width:100%;height:100%;object-fit:cover;display:block}
+.chip{position:absolute;background:var(--frame-2);border:1px solid var(--frame-line);border-radius:14px;padding:12px 14px;font-size:13px;color:var(--frame-dim);min-width:150px}
+.chip b{display:block;font-size:20px;color:#fff;letter-spacing:-.03em;font-weight:650}
+.chip b.lime{color:var(--brand)}
+.chip .bar{height:6px;border-radius:99px;background:var(--frame-3);margin-top:8px;overflow:hidden}.chip .bar i{display:block;height:100%;background:var(--brand);width:72%}
+.chip.c1{left:-4%;top:14%}.chip.c2{right:-6%;top:44%}.chip.c3{left:2%;bottom:6%}
+.chip .ok{display:inline-flex;align-items:center;gap:6px;color:var(--brand);font-weight:600}
+.marq{border-top:1px solid var(--frame-line);margin-top:56px;overflow:hidden;padding:16px 0;position:relative;z-index:2}
+.marq div{display:flex;gap:56px;width:max-content;animation:slide 30s linear infinite;font-weight:600;color:var(--frame-dim);white-space:nowrap;font-size:16px}
+.marq div span b{color:var(--brand)}
+
+/* campaigns */
+.camps{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px;margin-top:36px}
+.camp{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:#fff;display:flex;flex-direction:column;cursor:pointer;transition:border-color .15s ease;text-align:left;padding:0}
+.camp:hover{border-color:#CFC4BC}
+.cover{position:relative;aspect-ratio:16/8.4;background:var(--frame);overflow:hidden}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover .gen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--frame);background-image:repeating-linear-gradient(135deg,rgba(30,22,18,.07) 0 2px,transparent 2px 14px)!important}
+.cover .gen .gi{font-size:72px;font-weight:800;letter-spacing:-.07em;line-height:1}
+.cover .gen .gn{font-family:"Geist Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.cover .tags{position:absolute;left:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:#fff;color:var(--text);border:1px solid transparent}
+.tag.live{background:var(--brand);color:var(--ink)}.tag.live i{width:6px;height:6px;border-radius:50%;background:var(--ink);animation:pulse 1.3s infinite}
+.tag.dark{background:rgba(30,22,18,.82);color:#fff}
+.tag.off{background:var(--muted);color:var(--dim)}
+.camp .body{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
+.camp .by{font-size:13px;color:var(--faint)}
+.camp h3{font-size:20px;letter-spacing:-.03em;font-weight:650;line-height:1.15;color:var(--ink)}
+.camp .tl{font-size:14px;color:var(--dim);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rate{display:flex;align-items:baseline;gap:6px}
+.rate b{font-size:28px;letter-spacing:-.04em;font-weight:700;color:var(--ink)}
+.rate span{font-size:13px;color:var(--dim)}
+.budget .row{display:flex;justify-content:space-between;font-size:13px;color:var(--dim);margin-bottom:6px}
+.budget .row b{color:var(--text)}
+.meter{height:8px;border-radius:99px;background:var(--muted);overflow:hidden;border:1px solid var(--line)}
+.meter i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width 1.2s var(--ease)}
+.plats{display:flex;gap:6px;flex-wrap:wrap}
+.plat{font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;background:var(--muted);color:var(--dim);display:inline-flex;align-items:center;gap:6px}
+.plat i{width:7px;height:7px;border-radius:2px;display:inline-block}
+.camp .foot{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim);border-top:1px solid var(--line);padding:12px 18px}
+.camp .foot b{color:var(--text)}
+.empty{border:1px dashed var(--line-2);border-radius:var(--r-lg);padding:48px 24px;text-align:center;color:var(--dim);margin-top:36px}
+.empty b{display:block;color:var(--text);font-size:18px;margin-bottom:6px}
+
+/* checks band */
+.dark-band{background:var(--frame);color:var(--frame-text)}
+.dark-band h2{color:#fff}.dark-band h2 span{color:var(--brand)}
+.dark-band .sub{color:var(--frame-dim)}
+.checks{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:40px}
+.ck{border:1px solid var(--frame-line);border-radius:var(--r-lg);padding:20px;background:var(--frame-2)}
+.ck .n{font-family:"Geist Mono",monospace;font-size:12px;color:var(--brand)}
+.ck h3{font-size:17px;color:#fff;margin:14px 0 6px;letter-spacing:-.02em;font-weight:600}
+.ck p{font-size:14px;color:var(--frame-dim)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+.st{border:1px solid var(--line);border-radius:var(--r-lg);padding:22px;background:#fff}
+.st .n{width:34px;height:34px;border-radius:10px;background:var(--soft);color:var(--deep);display:grid;place-items:center;font-weight:700;font-size:15px}
+.st h3{font-size:18px;margin:16px 0 6px;letter-spacing:-.02em;font-weight:600;color:var(--ink)}
+.st p{font-size:14px;color:var(--dim)}
+.fly{margin-top:18px;border-radius:var(--r-lg);background:var(--soft);border:1px solid var(--line-b);padding:26px 28px;display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.fly h3{font-size:20px;letter-spacing:-.03em;color:var(--ink);font-weight:650}
+.fly p{color:var(--deep);font-size:15px;margin-top:4px;max-width:640px}
+
+/* dashboard */
+.dash{background:var(--muted);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dash-top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.hello{display:flex;align-items:center;gap:14px}
+.ava{width:52px;height:52px;border-radius:14px;background:var(--brand);color:var(--ink);display:grid;place-items:center;font-weight:800;font-size:22px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px}
+.kpi span{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:6px}
+.kpi b{display:block;font-size:30px;letter-spacing:-.04em;font-weight:700;color:var(--ink);margin-top:4px;line-height:1.1}
+.kpi.hi{background:var(--frame);border-color:var(--frame)}.kpi.hi span{color:var(--frame-dim)}.kpi.hi b{color:var(--brand)}
+.kpi small{font-size:12px;color:var(--faint)}
+.tabs{display:flex;gap:4px;margin-top:28px;border-bottom:1px solid var(--line-2);overflow-x:auto}
+.tabs button{border:0;background:transparent;padding:12px 14px;font-weight:600;font-size:15px;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s ease}
+.tabs button:hover{color:var(--text)}
+.tabs button.on{color:var(--ink);border-color:var(--ink)}
+.tabs .cnt{font-size:12px;background:var(--line);color:var(--dim);padding:1px 7px;border-radius:999px;margin-left:6px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;margin-top:18px}
+.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--dim);margin-bottom:6px}
+.field .hint{font-size:12px;color:var(--faint);margin-top:5px}
+.field input,.field select,.field textarea{width:100%;height:46px;border:1px solid var(--line-2);border-radius:var(--r);padding:0 14px;background:#fff;outline:0;transition:border-color .15s ease;font-size:15px}
+.field textarea{height:auto;min-height:80px;padding:12px 14px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.linkbox{position:relative}
+.linkbox .det{position:absolute;right:8px;top:8px;height:30px}
+.detect{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 10px;border-radius:8px}
+.detect.ok{background:var(--good-soft);color:var(--good)}.detect.no{background:var(--bad-soft);color:var(--bad)}
+.note{border-radius:var(--r);padding:12px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.note.warn{background:var(--warn-soft);color:#6B4200}.note.info{background:var(--soft);color:var(--deep)}.note.bad{background:var(--bad-soft);color:var(--bad)}
+.note .btn{margin-left:auto}
+.side-box{border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;background:var(--muted)}
+.side-box h4{font-size:15px;margin-bottom:12px}
+.side-box ol{margin:0;padding-left:18px;color:var(--dim);font-size:14px;display:grid;gap:8px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-weight:500;color:var(--faint);font-size:12px;padding:0 10px 10px;border-bottom:1px solid var(--line)}
+td{padding:14px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.clip-url{display:flex;flex-direction:column;gap:2px;min-width:0}
+.clip-url a{color:var(--text);font-weight:500;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;display:block}
+.clip-url a:hover{color:var(--deep)}
+.clip-url small{color:var(--faint);font-size:12px}
+.st-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.st-chip.pending{background:var(--warn-soft);color:var(--warn)}.st-chip.approved{background:var(--good-soft);color:var(--good)}
+.st-chip.paid{background:var(--frame);color:var(--brand)}.st-chip.rejected{background:var(--bad-soft);color:var(--bad)}
+.st-chip.ready{background:var(--soft);color:var(--deep)}
+.cks{display:flex;gap:4px;flex-wrap:wrap}
+.cks span{font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;background:var(--muted);color:var(--dim)}
+.cks span.y{background:var(--good-soft);color:var(--good)}.cks span.n{background:var(--bad-soft);color:var(--bad)}
+.num{font-variant-numeric:tabular-nums;font-weight:600}
+.actions{display:flex;gap:6px;justify-content:flex-end}
+.tbl-wrap{overflow-x:auto}
+
+/* leaderboard */
+.lb{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;margin-top:36px}
+.lb-row{display:grid;grid-template-columns:56px 1fr 120px 120px 120px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);font-size:15px}
+.lb-row:last-child{border-bottom:0}
+.lb-row.head{font-size:12px;color:var(--faint);padding:12px 20px;background:var(--muted)}
+.lb-row .rk{font-weight:700;color:var(--faint)}
+.lb-row:nth-child(2) .rk{color:var(--ink);background:var(--brand);width:30px;height:30px;border-radius:9px;display:grid;place-items:center}
+.lb-row .nm{font-weight:600;display:flex;align-items:center;gap:10px}
+.lb-row .nm i{width:30px;height:30px;border-radius:9px;background:var(--muted);display:grid;place-items:center;font-style:normal;font-weight:700;color:var(--dim);font-size:13px}
+.lb-row .r{text-align:right}
+
+/* faq */
+.faq{max-width:840px;margin-top:28px}
+details{border-bottom:1px solid var(--line);padding:20px 0}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:17px;font-weight:600;color:var(--ink)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:24px;color:var(--deep);font-weight:400;transition:transform .2s ease}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--dim);margin-top:10px;max-width:720px}
+
+/* campaign sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(30,22,18,.55);z-index:60;display:flex;justify-content:flex-end}
+.sheet{width:min(920px,100%);height:100%;background:#fff;overflow-y:auto;animation:in .35s var(--ease)}
+@keyframes in{from{transform:translateX(40px);opacity:0}}
+.sheet .top{position:sticky;top:0;background:#fff;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--line)}
+.sheet .cover{aspect-ratio:16/6;border-radius:0}
+.sheet .inner{padding:26px 28px 40px;display:grid;grid-template-columns:1fr 300px;gap:28px}
+.sheet h2{font-size:clamp(26px,3vw,36px)}
+.sheet .brief{white-space:pre-line;color:var(--text);font-size:15px;margin-top:16px}
+.sheet h4{font-size:15px;margin:26px 0 10px;color:var(--ink)}
+.rules{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.rules li{display:flex;gap:10px;font-size:15px;align-items:flex-start}
+.rules li::before{content:"";flex:0 0 20px;height:20px;border-radius:6px;margin-top:1px;background:var(--soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234E6B00' stroke-width='3'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/12px no-repeat}
+.srcs a{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;font-size:14px;margin-bottom:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;transition:border-color .15s ease}
+.srcs a:hover{border-color:var(--brand)}
+.locked{border:1px dashed var(--line-2);border-radius:10px;padding:14px;font-size:14px;color:var(--dim)}
+.aside{position:sticky;top:72px;align-self:start;border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;display:flex;flex-direction:column;gap:14px}
+.aside .big{font-size:40px;font-weight:700;letter-spacing:-.05em;color:var(--ink);line-height:1}
+.aside dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:14px}
+.aside dt{color:var(--dim)}.aside dd{margin:0;text-align:right;font-weight:600}
+.mini-lb div{display:flex;justify-content:space-between;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
+.mini-lb div:last-child{border-bottom:0}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--frame);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:90;max-width:min(560px,92vw);animation:in .25s var(--ease)}
+.toast.bad{background:var(--bad)}.toast.good{background:var(--good)}
+
+/* footer */
+footer.site{background:#1E1612;color:#B9A597;padding:56px 0 28px;font-size:14px}
+footer.site .fgrid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:32px}
+footer.site img{height:30px;display:block;margin-bottom:14px}
+footer.site p{max-width:300px;line-height:1.6;margin:0 0 18px}
+footer.site h4{font-size:13px;font-weight:600;color:#fff;margin:4px 0 14px}
+footer.site ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+footer.site ul a{color:#B9A597;text-decoration:none;transition:color .15s ease}
+footer.site ul a:hover{color:#C6F432}
+footer.site .fbottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:44px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:13px;color:#8C7B70}
+
+@media (max-width:980px){
+  .hero-in{grid-template-columns:1fr}.stage{display:none}
+  .ticker,.kpis{grid-template-columns:1fr 1fr}
+  .checks{grid-template-columns:1fr 1fr}.steps{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr}
+  .sheet .inner{grid-template-columns:1fr}.aside{position:static}
+  header.nav nav{display:none}
+  footer.site .fgrid{grid-template-columns:1fr 1fr}
+  .lb-row{grid-template-columns:44px 1fr 90px 100px}.lb-row .hide-s{display:none}
+}
+@media (max-width:560px){
+  section{padding:56px 0}
+  .hero{padding-top:48px}
+  .checks,.steps,.row2{grid-template-columns:1fr}
+  .camps{grid-template-columns:1fr}
+  header.nav .signin{display:none}
+  .lb-row{grid-template-columns:36px 1fr 90px}.lb-row .hide-xs{display:none}
+  .panel{padding:18px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.js .reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header class="nav" id="nav"><div class="wrap">
+  <a href="/" aria-label="ClipKontrast home"><img src="/brand/logo.svg" alt="ClipKontrast"></a>
+  <nav aria-label="Sections">
+    <a href="/">Clip maker</a><a href="/earn" class="on">Earn<span class="badge-new">NEW</span></a><a href="#campaigns">Campaigns</a><a href="#checks">How we verify</a><a href="#leaderboard">Leaderboard</a><a href="#faq">FAQ</a>
+  </nav>
+  <div class="right" id="navRight">
+    <a class="signin" href="/login?next=%2Fearn">Sign in</a>
+    <a class="btn primary" href="/signup?next=%2Fearn%23me">Start earning</a>
+  </div>
+</div></header>
+
+<main>
+<div class="hero">
+  <div class="ga" id="ga" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-in">
+      <div>
+        <a class="pill-live reveal" href="#campaigns" id="heroPill"><b><i></i>LIVE</b><span id="heroPillText">Paid clipping campaigns are open</span></a>
+        <h1 class="reveal" style="--d:.06s">Clip creators.<br>Post shorts.<br><span class="hl">Get paid.</span></h1>
+        <p class="lede reveal" style="--d:.12s">Join a campaign, post clips from your own <b>YouTube, Instagram and X</b> accounts, and earn for every <b>1,000 views</b>. Every clip is checked automatically, and payouts go <b>straight to your UPI</b>.</p>
+        <div class="ctas reveal" style="--d:.18s">
+          <a class="btn primary" id="heroCta" href="/signup?next=%2Fearn%23me">Start earning
+            <svg viewBox="0 0 256 256"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
+          <a class="btn ghost-d" href="#campaigns">See live campaigns</a>
+          <a class="btn ghost-d" href="#download" id="heroDl">Download the free clip maker</a>
+        </div>
+      </div>
+      <div class="stage reveal" style="--d:.2s" aria-hidden="true">
+        <div class="ph"><video src="/brand/demo-hype.mp4" poster="/brand/demo-hype.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="chip c1">Views verified<b>48,210</b><span class="ok">● YouTube API</span></div>
+        <div class="chip c2">This clip earned<b class="lime">₹964</b></div>
+        <div class="chip c3">Campaign budget<b id="chipBudget">₹45,000</b><div class="bar"><i></i></div></div>
+      </div>
+    </div>
+    <div class="ticker reveal" style="--d:.24s">
+      <div><b class="lime" id="tLive">₹0</b><span>budget open right now</span></div>
+      <div><b id="tPaid">₹0</b><span>paid out to clippers</span></div>
+      <div><b id="tClippers">0</b><span>clippers in campaigns</span></div>
+      <div><b id="tViews">0</b><span>views counted</span></div>
+    </div>
+  </div>
+  <div class="marq" aria-hidden="true"><div>
+    <span>Paid per <b>1,000 views</b></span><span>Payouts to <b>UPI</b></span><span>No followers needed</span><span>YouTube · Instagram · X · TikTok</span><span>Every clip <b>cross-checked</b></span><span>Make clips <b>free</b> with ClipKontrast</span>
+    <span>Paid per <b>1,000 views</b></span><span>Payouts to <b>UPI</b></span><span>No followers needed</span><span>YouTube · Instagram · X · TikTok</span><span>Every clip <b>cross-checked</b></span><span>Make clips <b>free</b> with ClipKontrast</span>
+  </div></div>
+</div>
+
+<section id="me" class="dash" hidden>
+  <div class="wrap" id="dash"></div>
+</section>
+
+<section id="campaigns">
+  <div class="wrap">
+    <div class="kicker reveal"><i></i>Live campaigns</div>
+    <h2 class="reveal">Pick a campaign. <span>Start clipping today.</span></h2>
+    <p class="sub reveal">Each campaign has a fixed budget and a fixed rate. It pays until the budget runs out or the end date arrives, so the clips posted early earn the most.</p>
+    <div id="camps"></div>
+  </div>
+</section>
+
+<section id="checks" class="dark-band">
+  <div class="wrap">
+    <div class="kicker reveal" style="color:var(--brand)"><i></i>How we verify</div>
+    <h2 class="reveal">Every clip is cross-checked. <span>Honest clippers get paid fast.</span></h2>
+    <p class="sub reveal">Links are checked the moment you send them, and again when the views are counted. Botting and reuploads are caught here, so there's more budget left for real clips.</p>
+    <div class="checks">
+      <div class="ck reveal"><div class="n">01</div><h3>It's your account</h3><p>The clip's channel or handle has to match the account in your profile. Someone else's clip is refused instantly.</p></div>
+      <div class="ck reveal" style="--d:.05s"><div class="n">02</div><h3>Posted during the campaign</h3><p>The posting time is read from the platform. Clips posted before the campaign started don't count.</p></div>
+      <div class="ck reveal" style="--d:.1s"><div class="n">03</div><h3>Credit in the caption</h3><p>If the campaign asks for a tag like @creator, it's checked in your caption and description.</p></div>
+      <div class="ck reveal" style="--d:.15s"><div class="n">04</div><h3>Never paid twice</h3><p>Each clip can be sent in once. The same link in another form, or from another account, is refused.</p></div>
+      <div class="ck reveal" style="--d:.2s"><div class="n">05</div><h3>Real views, counted later</h3><p>Views are counted after the hold period (usually 7 days): automatically for YouTube, and from your Insights screenshot for the others.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="kicker reveal"><i></i>How it works</div>
+    <h2 class="reveal">From stream to UPI <span>in four steps.</span></h2>
+    <div class="steps">
+      <div class="st reveal"><div class="n">1</div><h3>Set up your profile</h3><p>Add your UPI ID, WhatsApp number and your YouTube, Instagram, X or TikTok handles. It takes a minute.</p></div>
+      <div class="st reveal" style="--d:.05s"><div class="n">2</div><h3>Join a campaign</h3><p>Read the brief and rules, then join. You get the creator's stream and VOD links for clipping.</p></div>
+      <div class="st reveal" style="--d:.1s"><div class="n">3</div><h3>Clip and post</h3><p>Cut the best moments, add a hook and captions, credit the creator, and post from your own accounts.</p></div>
+      <div class="st reveal" style="--d:.15s"><div class="n">4</div><h3>Send the link, get paid</h3><p>Paste each clip link here. We verify it, count the views, and send the money to your UPI.</p></div>
+    </div>
+    <div class="fly reveal" id="download">
+      <div><h3>Don't have an editor? ClipKontrast makes the clips for you.</h3>
+        <p>Paste the creator's stream link and ClipKontrast finds the best moments and gives you captioned vertical clips with hooks, ready to post. Free.</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn dark" id="dlBtn" href="/app">Download free</a><a class="btn" href="#" id="dlHelp" data-act="dlhelp">How to install</a></div>
+    </div>
+  </div>
+</section>
+
+<section id="leaderboard" style="padding-top:0">
+  <div class="wrap">
+    <div class="kicker reveal"><i></i>Leaderboard</div>
+    <h2 class="reveal">Top clippers <span>across every campaign.</span></h2>
+    <div id="lb"></div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="kicker"><i></i>FAQ</div>
+    <h2>Questions clippers ask.</h2>
+    <div class="faq">
+      <details open><summary>Do I need a big following?</summary><p>No. Shorts, Reels and X push good clips to people who don't follow you. A strong hook in the first two seconds and posting fast matter far more than followers.</p></details>
+      <details><summary>How much can I earn?</summary><p>Each campaign shows its rate per 1,000 views. At ₹20 per 1,000, a clip with 50,000 views earns ₹1,000. Some campaigns have a minimum view count and a most-per-clip limit, both shown on the campaign.</p></details>
+      <details><summary>When do I get paid?</summary><p>Views are counted after the campaign's hold period, usually 7 days after you post. Once your clip is approved, the amount shows as owed in your dashboard, and payouts go to your UPI ID. You get a notification when the money is sent.</p></details>
+      <details><summary>How are Instagram and X views counted?</summary><p>YouTube views are read automatically. For Instagram and X, open the clip's Insights after the hold period, take a screenshot that shows the views, and add it to the clip in your dashboard.</p></details>
+      <details><summary>Why was my clip refused?</summary><p>The most common reasons: the clip is on a different account from the one in your profile, it was posted before the campaign started, it was already sent in, or it breaks a campaign rule (no credit, copyrighted music, a plain reupload). The reason is always shown on the clip.</p></details>
+      <details><summary>Can I use more than one account?</summary><p>One account per platform per profile. Add your YouTube, Instagram, X and TikTok handles, and you can post on all four.</p></details>
+      <details><summary>What happens when the budget runs out?</summary><p>The campaign closes on its own and stops taking new clips. Clips that were already approved are still paid.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site"><div class="wrap">
+  <div class="fgrid">
+    <div><a href="/"><img src="/brand/logo-light.svg" alt="ClipKontrast" width="120" height="30"></a>
+      <p>The AI clip maker for streams, and paid clipping campaigns for the people who post them.</p></div>
+    <div><h4>Earn</h4><ul><li><a href="#campaigns">Live campaigns</a></li><li><a href="#checks">How we verify</a></li><li><a href="#leaderboard">Leaderboard</a></li><li><a href="#me">My earnings</a></li></ul></div>
+    <div><h4>Clip maker</h4><ul><li><a href="/">How it works</a></li><li><a href="#download">Download free</a></li><li><a href="/signup">Create an account</a></li></ul></div>
+    <div><h4>Legal</h4><ul><li><a href="/terms">Terms of Service</a></li><li><a href="/privacy">Privacy Policy</a></li><li><a href="/acceptable-use">Acceptable Use</a></li></ul></div>
+  </div>
+  <div class="fbottom"><span>© <span id="yr"></span> ClipKontrast</span><span>Run a campaign for your channel? Email us from the contact page.</span></div>
+</div></footer>
+
+<div id="sheet"></div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr = (n, d = 0) => "₹" + Number(n || 0).toLocaleString("en-IN", {maximumFractionDigits: d, minimumFractionDigits: d});
+const inr2 = n => inr(n, Number(n) % 1 ? 2 : 0);
+const num = n => Number(n || 0).toLocaleString("en-IN");
+const short = n => n >= 1e7 ? (n / 1e7).toFixed(1).replace(/\.0$/, "") + " Cr" : n >= 1e5 ? (n / 1e5).toFixed(1).replace(/\.0$/, "") + " L" : n >= 1e3 ? (n / 1e3).toFixed(1).replace(/\.0$/, "") + "K" : String(n || 0);
+const PLAT = {youtube: ["YouTube Shorts", "#FF3B30"], instagram: ["Instagram Reels", "#D62976"], x: ["X", "#211813"], tiktok: ["TikTok", "#25F4EE"]};
+const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "#";
+const S = {data: null, me: null, user: null, tab: "submit", open: null};
+const ARROW = '<svg viewBox="0 0 256 256"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>';
+
+async function api(path, opts = {}) {
+  const o = {method: opts.method || "GET", headers: {}};
+  if (opts.body instanceof FormData) o.body = opts.body;
+  else if (opts.body !== undefined) { o.body = JSON.stringify(opts.body); o.headers["Content-Type"] = "application/json"; }
+  const r = await fetch(path, o);
+  let d = null; try { d = await r.json(); } catch {}
+  if (!r.ok) throw new Error((d && d.detail) || "Something went wrong. Try again.");
+  return d;
+}
+function toast(msg, kind = "") {
+  $$(".toast").forEach(t => t.remove());
+  const t = document.createElement("div"); t.className = "toast " + kind; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4200);
+}
+function until(t) {
+  if (!t) return "";
+  const s = t - Date.now() / 1000; if (s <= 0) return "Ended";
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  return d ? `${d}d ${h}h left` : h ? `${h}h ${m}m left` : `${m}m left`;
+}
+const date = t => t ? new Date(t * 1000).toLocaleDateString("en-IN", {day: "numeric", month: "short"}) : "";
+const ago = t => { const s = Date.now() / 1000 - t; return s < 3600 ? Math.max(1, Math.floor(s / 60)) + "m ago" : s < 86400 ? Math.floor(s / 3600) + "h ago" : Math.floor(s / 86400) + "d ago"; };
+function signupHref(next) { return (S.data && S.data.accounts === false) ? next : "/signup?next=" + encodeURIComponent(next); }
+
+// ---------------------------------------------------------------- counting up
+function countTo(el, to, fmt) {
+  const start = performance.now(), dur = 1200;
+  const step = now => { const k = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(to * e); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+
+// ---------------------------------------------------------------- campaign cards
+function cover(c, big = false) {
+  const tags = [];
+  if (c.open) tags.push('<span class="tag live"><i></i>LIVE</span>');
+  else if (c.status === "paused") tags.push('<span class="tag off">Paused</span>');
+  else if (c.status === "live" && c.starts_at > Date.now() / 1000) tags.push('<span class="tag dark">Starts ' + esc(date(c.starts_at)) + '</span>');
+  else tags.push('<span class="tag off">Ended</span>');
+  if (c.category) tags.push(`<span class="tag dark">${esc(c.category)}</span>`);
+  if (c.member) tags.push('<span class="tag">✓ Joined</span>');
+  const initials = (c.creator_name || c.title).split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  const art = c.cover ? `<img src="${esc(c.cover)}" alt="">`
+    : `<div class="gen" style="background:${esc(c.accent)}"><span class="gi">${esc(initials)}</span><span class="gn">${esc(c.creator_name || c.title)}</span></div>`;
+  return `<div class="cover">${art}<div class="tags">${tags.join("")}</div></div>`;
+}
+const plats = c => `<div class="plats">${c.platforms.map(p => `<span class="plat"><i style="background:${PLAT[p][1]}"></i>${esc(PLAT[p][0])}</span>`).join("")}</div>`;
+function card(c) {
+  return `<button class="camp reveal" data-open="${esc(c.slug)}">
+    ${cover(c)}
+    <div class="body">
+      <div><div class="by">${esc(c.creator_name || "ClipKontrast campaign")}</div><h3>${esc(c.title)}</h3></div>
+      ${c.tagline ? `<p class="tl">${esc(c.tagline)}</p>` : ""}
+      <div class="rate"><b>${inr2(c.rate_per_1k)}</b><span>per 1,000 views${c.max_per_clip ? ` · up to ${inr(c.max_per_clip)} a clip` : ""}</span></div>
+      <div class="budget"><div class="row"><span><b>${inr(c.remaining)}</b> left</span><span>of ${inr(c.budget)}</span></div><div class="meter"><i style="width:0" data-w="${100 - c.used_pct}"></i></div></div>
+      ${plats(c)}
+    </div>
+    <div class="foot"><span><b>${num(c.clippers)}</b> clippers · <b>${num(c.clips)}</b> clips</span><span>${c.open ? esc(until(c.ends_at) || "Open") : ""}</span></div>
+  </button>`;
+}
+function drawCamps() {
+  const cs = S.data.campaigns;
+  $("#camps").innerHTML = cs.length ? `<div class="camps">${cs.map(card).join("")}</div>`
+    : `<div class="empty"><b>The next campaign is on its way</b>Create your account now and set up your payout profile, so you can join the moment it opens.</div>`;
+  requestAnimationFrame(() => setTimeout(() => $$("#camps .meter i").forEach(i => i.style.width = Math.max(1.5, i.dataset.w) + "%"), 150));
+  watchReveal();
+}
+
+// ---------------------------------------------------------------- leaderboard
+function drawLb() {
+  const lb = S.data.leaderboard;
+  $("#lb").innerHTML = lb.length ? `<div class="lb reveal">
+    <div class="lb-row head"><span>#</span><span>Clipper</span><span class="r hide-xs">Clips</span><span class="r">Views</span><span class="r hide-s">Earned</span></div>
+    ${lb.map((r, i) => `<div class="lb-row"><span class="rk">${i + 1}</span><span class="nm"><i>${esc((r.name[0] || "?").toUpperCase())}</i>${esc(r.name)}</span>
+      <span class="r num hide-xs">${num(r.clips)}</span><span class="r num">${short(r.views)}</span><span class="r num hide-s">${inr(r.earned)}</span></div>`).join("")}
+  </div>` : `<div class="empty"><b>No one's on the board yet</b>The first clipper to send in a clip takes the top spot.</div>`;
+  watchReveal();
+}
+
+// ---------------------------------------------------------------- one campaign, in a side sheet
+async function openCampaign(slug) {
+  let c;
+  try { c = await api("/api/earn/public/campaigns/" + encodeURIComponent(slug)); } catch (e) { toast(e.message, "bad"); return; }
+  S.open = c;
+  if (location.hash !== "#c=" + slug) history.replaceState(null, "", "#c=" + slug);
+  const me = S.user, prof = S.me?.profile;
+  let cta;
+  if (!c.open) cta = `<button class="btn" disabled>${c.status === "paused" ? "Paused for now" : "Not taking clips"}</button>`;
+  else if (!me) cta = `<a class="btn primary" href="${signupHref("/earn#c=" + c.slug)}">Sign up to join ${ARROW}</a><a class="btn" href="/login?next=${encodeURIComponent("/earn#c=" + c.slug)}">I have an account</a>`;
+  else if (c.member) cta = `<button class="btn primary" data-act="submit-for" data-id="${esc(c.id)}">Send a clip ${ARROW}</button>`;
+  else if (!prof?.complete) cta = `<button class="btn primary" data-act="profile-first">Set up payout profile</button>`;
+  else cta = `<button class="btn primary" data-act="join" data-slug="${esc(c.slug)}">Join campaign ${ARROW}</button>`;
+  const payEx = c.rate_per_1k ? `A clip with 50,000 views earns <b>${inr2(Math.min(50 * c.rate_per_1k, c.max_per_clip || 1e12))}</b>.` : "";
+  $("#sheet").innerHTML = `<div class="sheet-bg" data-act="close-bg"><div class="sheet" role="dialog" aria-label="${esc(c.title)}">
+    <div class="top"><span class="mono" style="color:var(--faint)">Campaign</span><button class="btn sm" data-act="close">Close</button></div>
+    ${cover(c, true)}
+    <div class="inner">
+      <div>
+        <div class="by" style="color:var(--faint);font-size:14px">${c.creator_url ? `<a href="${esc(safeUrl(c.creator_url))}" target="_blank" rel="noopener" style="color:inherit">${esc(c.creator_name)}</a>` : esc(c.creator_name)}</div>
+        <h2>${esc(c.title)}</h2>
+        ${c.tagline ? `<p class="sub">${esc(c.tagline)}</p>` : ""}
+        ${c.brief ? `<div class="brief">${esc(c.brief)}</div>` : ""}
+        ${c.rules.length ? `<h4>Clip rules</h4><ul class="rules">${c.rules.map(r => `<li>${esc(r)}</li>`).join("")}</ul>` : ""}
+        ${c.required_tag ? `<h4>Required in your caption</h4><div class="note info"><b>${esc(c.required_tag)}</b><span>Checked automatically on YouTube, and by hand on the others.</span></div>` : ""}
+        <h4>Streams and footage to clip</h4>
+        ${c.sources ? (c.sources.length ? `<div class="srcs">${c.sources.map(s => `<a href="${esc(safeUrl(s))}" target="_blank" rel="noopener">↗ ${esc(s)}</a>`).join("")}</div>` : `<div class="locked">Links will be posted here.</div>`)
+          : `<div class="locked">🔒 Join the campaign to see the stream and VOD links.</div>`}
+        <h4>Top clippers in this campaign</h4>
+        ${c.leaderboard.length ? `<div class="mini-lb">${c.leaderboard.map((r, i) => `<div><span>${i + 1}. ${esc(r.name)}</span><span class="num">${short(r.views)} views · ${inr(r.earned)}</span></div>`).join("")}</div>` : `<div class="locked">No clips yet. Yours could be first.</div>`}
+      </div>
+      <aside class="aside">
+        <div><div class="big">${inr2(c.rate_per_1k)}</div><div style="color:var(--dim);font-size:14px">per 1,000 views</div></div>
+        <div class="budget"><div class="row"><span><b>${inr(c.remaining)}</b> left</span><span>${inr(c.budget)}</span></div><div class="meter"><i style="width:${Math.max(1.5, 100 - c.used_pct)}%"></i></div></div>
+        <dl>
+          <dt>Platforms</dt><dd>${c.platforms.map(p => esc(PLAT[p][0].split(" ")[0])).join(", ")}</dd>
+          ${c.min_views ? `<dt>Minimum views</dt><dd>${num(c.min_views)}</dd>` : ""}
+          ${c.max_per_clip ? `<dt>Most per clip</dt><dd>${inr(c.max_per_clip)}</dd>` : ""}
+          <dt>Views counted</dt><dd>${c.hold_days} days after posting</dd>
+          ${c.starts_at ? `<dt>Starts</dt><dd>${esc(date(c.starts_at))}</dd>` : ""}
+          ${c.ends_at ? `<dt>Ends</dt><dd>${esc(date(c.ends_at))}</dd>` : ""}
+          <dt>Clippers</dt><dd>${num(c.clippers)}</dd>
+        </dl>
+        ${payEx ? `<div class="note info" style="font-size:13px"><span>${payEx}</span></div>` : ""}
+        <div style="display:grid;gap:8px">${cta}</div>
+      </aside>
+    </div></div></div>`;
+  document.body.style.overflow = "hidden";
+}
+function closeSheet() { $("#sheet").innerHTML = ""; document.body.style.overflow = ""; S.open = null; if (location.hash.startsWith("#c=")) history.replaceState(null, "", location.pathname); }
+
+// ---------------------------------------------------------------- the clipper's dashboard
+function parseLink(u) {
+  u = (u || "").trim(); if (!u) return null;
+  let p; try { p = new URL(/^https?:\/\//i.test(u) ? u : "https://" + u); } catch { return {err: "That isn't a link."}; }
+  const h = p.hostname.replace(/^(www|m)\./, ""), parts = p.pathname.split("/").filter(Boolean);
+  if (["youtube.com", "youtu.be"].includes(h)) {
+    const id = h === "youtu.be" ? parts[0] : ["shorts", "live", "embed"].includes(parts[0]) ? parts[1] : p.searchParams.get("v");
+    return /^[\w-]{11}$/.test(id || "") ? {platform: "youtube"} : {err: "Copy the Share link of your Short."};
+  }
+  if (["instagram.com", "instagr.am"].includes(h)) return parts.some(x => ["reel", "reels", "p", "tv"].includes(x)) ? {platform: "instagram"} : {err: "Copy the reel's link, not your profile."};
+  if (["x.com", "twitter.com", "mobile.twitter.com"].includes(h)) return parts[1] === "status" ? {platform: "x", handle: "@" + parts[0].toLowerCase()} : {err: "Copy the post's link."};
+  if (["tiktok.com", "vm.tiktok.com", "vt.tiktok.com"].includes(h)) return parts[1] === "video" ? {platform: "tiktok", handle: parts[0].toLowerCase()} : {err: "Paste the full tiktok.com/@you/video/… link."};
+  return {err: "YouTube, Instagram, X and TikTok links only."};
+}
+function statusChip(s) {
+  if (s.status === "pending") return s.ready ? '<span class="st-chip ready">Ready for review</span>' : `<span class="st-chip pending">Counting views · ${esc(date(s.ready_at))}</span>`;
+  return {approved: '<span class="st-chip approved">Approved · owed</span>', paid: '<span class="st-chip paid">Paid</span>', rejected: '<span class="st-chip rejected">Not approved</span>'}[s.status] || esc(s.status);
+}
+function checkChips(c) {
+  const one = (v, y, n, q) => v === true ? `<span class="y">✓ ${y}</span>` : v === false ? `<span class="n">✕ ${n}</span>` : q ? `<span>${q}</span>` : "";
+  return `<div class="cks">${one(c.owner, "Your account", "Not your account", "Account: by hand")}${one(c.after_start, "On time", "Too early", "")}${one(c.tag, "Tag found", "Tag missing", "")}</div>`;
+}
+function drawDash() {
+  const sec = $("#me");
+  if (!S.user) { sec.hidden = true; return; }
+  sec.hidden = false;
+  const m = S.me, t = m.totals, p = m.profile, u = S.user;
+  const joinedOpen = S.data.campaigns.filter(c => c.open && m.joined.includes(c.id));
+  const openNotJoined = S.data.campaigns.filter(c => c.open && !m.joined.includes(c.id));
+  const tabs = [["submit", "Send a clip"], ["clips", "My clips", m.submissions.length], ["payouts", "Payouts", m.payouts.length], ["profile", "Payout profile" + (p.complete ? "" : " ⚠")]];
+  let body = "";
+  if (S.tab === "submit") {
+    body = !p.complete ? `<div class="note warn"><span>Set up your payout profile first: UPI ID, WhatsApp number and at least one account handle. Clips are matched to these handles.</span><button class="btn sm dark" data-act="tab" data-t="profile">Set it up</button></div>`
+      : !joinedOpen.length ? `<div class="note info"><span>${openNotJoined.length ? "Join a campaign first. Open one below and press Join." : "No campaign is open right now. You'll see it here the moment one starts."}</span>${openNotJoined.length ? `<button class="btn sm dark" data-open="${esc(openNotJoined[0].slug)}">See ${esc(openNotJoined[0].title)}</button>` : ""}</div>`
+      : `<div class="grid2"><form id="subForm" autocomplete="off">
+          <div class="field"><label>Campaign</label><select name="campaign">${joinedOpen.map(c => `<option value="${esc(c.id)}" ${S.submitFor === c.id ? "selected" : ""}>${esc(c.title)} · ${inr2(c.rate_per_1k)}/1K</option>`).join("")}</select></div>
+          <div class="field"><label>Clip link</label><div class="linkbox"><input name="url" value="${esc(S.prefill || "")}" placeholder="https://youtube.com/shorts/…  or an Instagram, X or TikTok link" required><span class="det" id="det"></span></div>
+            <div class="hint">Send each clip once, after it's posted and public.</div></div>
+          <div class="field"><label>Note for the reviewer (optional)</label><input name="note" maxlength="300" placeholder="e.g. posted within 30 minutes of the moment"></div>
+          <button class="btn primary" style="width:100%;height:50px">Send clip for verification ${ARROW}</button>
+        </form>
+        <div class="side-box"><h4>What happens next</h4><ol>
+          <li>The link is checked right away: your account, posting time, caption tag and duplicates.</li>
+          <li>Views are counted ${joinedOpen[0].hold_days} days after posting${p.youtube ? ", automatically for YouTube" : ""}.</li>
+          <li>For Instagram and X, add an Insights screenshot to the clip in <b>My clips</b> once the hold period is over.</li>
+          <li>Once approved, the amount is owed and gets paid to <b>${esc(p.upi)}</b>.</li></ol></div></div>`;
+  } else if (S.tab === "clips") {
+    body = m.submissions.length ? `<div class="tbl-wrap"><table><thead><tr><th>Clip</th><th>Checks</th><th style="text-align:right">Views</th><th style="text-align:right">Earnings</th><th>Status</th><th></th></tr></thead><tbody>
+      ${m.submissions.map(s => `<tr>
+        <td><div class="clip-url"><a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener">${esc(PLAT[s.platform][0])} · ${esc(s.url.replace(/^https?:\/\/(www\.)?/, ""))}</a><small>${esc(s.campaign)} · sent ${esc(ago(s.submitted_at))}${s.views_source === "api" ? " · views from YouTube" : ""}</small>
+          ${s.review_note ? `<small style="color:${s.status === "rejected" ? "var(--bad)" : "var(--dim)"}">${esc(s.review_note)}</small>` : ""}</div></td>
+        <td>${checkChips(s.checks)}</td>
+        <td style="text-align:right" class="num">${num(s.views)}</td>
+        <td style="text-align:right" class="num">${s.status === "approved" || s.status === "paid" ? inr2(s.amount) : s.status === "rejected" ? "—" : "~" + inr2(s.estimate)}</td>
+        <td>${statusChip(s)}</td>
+        <td><div class="actions">${s.status === "pending" ? `<label class="btn xs" title="Add a screenshot of the clip's Insights showing the views">${s.has_proof ? "Replace proof" : "Add proof"}<input type="file" accept="image/png,image/jpeg,image/webp" hidden data-proof="${s.id}"></label>
+          <button class="btn xs" data-act="withdraw" data-id="${s.id}" title="Remove this clip">Remove</button>` : ""}${s.has_proof ? `<a class="btn xs" href="/api/earn/proof/${s.id}" target="_blank">Proof</a>` : ""}</div></td>
+      </tr>`).join("")}</tbody></table></div>` : `<div class="empty" style="margin:0"><b>No clips yet</b>Send your first clip from the Send a clip tab.</div>`;
+  } else if (S.tab === "payouts") {
+    body = m.payouts.length ? `<table><thead><tr><th>Date</th><th>Clips</th><th>Sent to</th><th>Reference</th><th style="text-align:right">Amount</th></tr></thead><tbody>
+      ${m.payouts.map(x => `<tr><td>${esc(new Date(x.created_at * 1000).toLocaleDateString("en-IN"))}</td><td>${x.clips}</td><td>${esc(x.upi)}</td><td>${esc(x.ref || "—")}</td><td style="text-align:right" class="num">${inr2(x.amount)}</td></tr>`).join("")}</tbody></table>`
+      : `<div class="empty" style="margin:0"><b>No payouts yet</b>Approved clips show up as owed. When the money is sent to your UPI, it's listed here.</div>`;
+  } else {
+    body = `<form id="profForm" autocomplete="off"><div class="grid2"><div>
+      <div class="row2"><div class="field"><label>Name on the leaderboard</label><input name="display_name" value="${esc(p.display_name)}" placeholder="${esc(u.name)}" maxlength="40"></div>
+        <div class="field"><label>City</label><input name="city" value="${esc(p.city)}" placeholder="Mumbai"></div></div>
+      <div class="row2"><div class="field"><label>UPI ID for payouts *</label><input name="upi" value="${esc(p.upi)}" placeholder="name@okaxis"></div>
+        <div class="field"><label>WhatsApp number *</label><input name="whatsapp" value="${esc(p.whatsapp)}" placeholder="+91 98765 43210"></div></div>
+      <div class="row2"><div class="field"><label>YouTube channel</label><input name="youtube" value="${esc(p.youtube)}" placeholder="@yourchannel"></div>
+        <div class="field"><label>Instagram</label><input name="instagram" value="${esc(p.instagram)}" placeholder="@yourpage"></div></div>
+      <div class="row2"><div class="field"><label>X</label><input name="x" value="${esc(p.x)}" placeholder="@yourhandle"></div>
+        <div class="field"><label>TikTok</label><input name="tiktok" value="${esc(p.tiktok)}" placeholder="@you"></div></div>
+      <button class="btn primary">Save profile</button></div>
+      <div class="side-box"><h4>Why we need this</h4><ol><li>Your handles prove the clips you send are yours. A clip from any other account is refused.</li><li>Your UPI ID is where payouts go. Double-check it.</li><li>We only use your WhatsApp number for campaign updates and payout questions.</li></ol></div></div></form>`;
+  }
+  const verifyNote = u.verified ? "" : `<div class="note warn" style="margin-top:20px"><span>Confirm your email to join campaigns and send clips. We sent a link to <b>${esc(u.email)}</b>.</span><button class="btn sm" data-act="resend">Send a new link</button></div>`;
+  $("#dash").innerHTML = `
+    <div class="dash-top"><div class="hello"><div class="ava">${esc((p.display_name || u.name || "?")[0].toUpperCase())}</div>
+      <div><div class="kicker" style="margin:0"><i></i>My earnings</div><h2 style="font-size:30px">Hey ${esc(p.display_name || u.name)}</h2></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${u.is_admin ? `<a class="btn sm" href="/admin/earn">Manage campaigns</a>` : ""}<a class="btn sm" href="${S.data.earn_only && !u.is_admin ? "#download" : "/app"}">Make clips</a></div></div>
+    ${verifyNote}
+    <div class="kpis">
+      <div class="kpi hi"><span>Owed to you</span><b>${inr2(t.owed)}</b><small>approved, waiting for payout</small></div>
+      <div class="kpi"><span>Being counted</span><b>~${inr2(t.pending_estimate)}</b><small>estimate from current views</small></div>
+      <div class="kpi"><span>Paid to you</span><b>${inr2(t.paid)}</b><small>${m.payouts.length} payout${m.payouts.length === 1 ? "" : "s"}</small></div>
+      <div class="kpi"><span>Views</span><b>${short(t.views)}</b><small>across ${t.clips} clip${t.clips === 1 ? "" : "s"}</small></div>
+    </div>
+    <div class="tabs">${tabs.map(([k, l, n]) => `<button class="${S.tab === k ? "on" : ""}" data-act="tab" data-t="${k}">${esc(l)}${n ? `<span class="cnt">${n}</span>` : ""}</button>`).join("")}</div>
+    <div class="panel">${body}</div>`;
+}
+
+function drawNav() {
+  const r = $("#navRight");
+  if (S.user) {
+    r.innerHTML = `<a class="signin" href="#me">My earnings</a>${S.data.earn_only && !S.user.is_admin ? `<a class="btn primary" href="#download">Download clip maker</a>` : `<a class="btn primary" href="/app">Open ClipKontrast</a>`}`;
+    $("#heroCta").href = "#me"; $("#heroCta").firstChild.textContent = "Go to my earnings ";
+  } else if (S.data && S.data.accounts === false) {
+    r.innerHTML = `<a class="btn primary" href="/app">Open ClipKontrast</a>`;
+  }
+}
+function drawHero() {
+  const o = S.data.overview, live = S.data.campaigns.filter(c => c.open);
+  countTo($("#tLive"), o.live_budget, v => inr(v)); countTo($("#tPaid"), o.paid_out, v => inr(v));
+  countTo($("#tClippers"), o.clippers, v => num(Math.round(v))); countTo($("#tViews"), o.views, v => short(Math.round(v)));
+  if (live[0]) { $("#heroPillText").textContent = `${live[0].title}: ${inr2(live[0].rate_per_1k)} per 1K views`; $("#heroPill").href = "#c=" + live[0].slug; $("#chipBudget").textContent = inr(live[0].budget); }
+}
+
+// ---------------------------------------------------------------- loading
+async function load() {
+  S.data = await api("/api/earn/public/overview");
+  S.user = S.data.user;
+  if (S.user) { try { S.me = await api("/api/earn/me"); } catch { S.me = null; S.user = null; } }
+  const dl = S.data.download_url;
+  if (S.data.earn_only || S.data.accounts === false) { $("#dlBtn").href = dl; $("#dlBtn").target = "_blank"; $("#dlBtn").rel = "noopener"; }
+  else { $("#dlBtn").textContent = "Open the clip maker"; $("#dlHelp").hidden = true; }
+  drawNav(); drawHero(); drawCamps(); drawLb(); drawDash();
+}
+async function refresh() {
+  S.data = await api("/api/earn/public/overview");
+  if (S.user) S.me = await api("/api/earn/me");
+  drawCamps(); drawLb(); drawDash();
+}
+function route() {
+  const h = location.hash;
+  if (h.startsWith("#submit=")) {
+    const url = decodeURIComponent(h.slice(8));
+    if (!S.user) { location.href = signupHref("/earn" + h); return; }
+    S.tab = S.me?.profile?.complete ? "submit" : "profile"; S.prefill = url; drawDash();
+    history.replaceState(null, "", "#me"); $("#me").scrollIntoView();
+    const i = $("#subForm [name=url]"); if (i) { i.value = url; i.dispatchEvent(new Event("input", {bubbles: true})); i.focus(); }
+    else if (S.tab === "profile") toast("Set up your payout profile first, then send the clip.");
+    return;
+  }
+  if (h.startsWith("#c=")) openCampaign(decodeURIComponent(h.slice(3)));
+  else if (h === "#me" && S.user) $("#me").scrollIntoView();
+}
+
+// ---------------------------------------------------------------- actions
+document.addEventListener("click", async e => {
+  const o = e.target.closest("[data-open]"); if (o) { e.preventDefault(); closeSheet(); openCampaign(o.dataset.open); return; }
+  const a = e.target.closest("[data-act]"); if (!a) return;
+  const act = a.dataset.act;
+  if (act === "close" || (act === "close-bg" && e.target === a)) return closeSheet();
+  if (act === "tab") { S.tab = a.dataset.t; drawDash(); return; }
+  if (act === "profile-first") { closeSheet(); S.tab = "profile"; drawDash(); $("#me").scrollIntoView(); return; }
+  if (act === "submit-for") { S.submitFor = a.dataset.id; closeSheet(); S.tab = "submit"; drawDash(); $("#me").scrollIntoView(); setTimeout(() => $("#subForm [name=url]")?.focus(), 400); return; }
+  if (act === "join") {
+    a.disabled = true;
+    try { const c = await api(`/api/earn/campaigns/${encodeURIComponent(a.dataset.slug)}/join`, {method: "POST"}); toast(`You're in. Welcome to ${c.title}.`, "good"); await refresh(); openCampaign(c.slug); }
+    catch (err) { toast(err.message, "bad"); a.disabled = false; }
+    return;
+  }
+  if (act === "withdraw") {
+    if (!confirm("Remove this clip? You can send it again later.")) return;
+    try { await api("/api/earn/submissions/" + a.dataset.id, {method: "DELETE"}); toast("Clip removed."); await refresh(); } catch (err) { toast(err.message, "bad"); }
+    return;
+  }
+  if (act === "dlhelp") {
+    e.preventDefault();
+    toast("Windows: unzip to C:\\ClipKontrast, double-click Start-ClipKontrast-Windows.bat. Mac: right-click Start-ClipKontrast-Mac.command, Open. First start takes 5 to 10 minutes.");
+    return;
+  }
+  if (act === "resend") {
+    try { const r = await api("/api/auth/resend-verification", {method: "POST"}); toast(r.verified ? "Your email is already confirmed." : "A new link is on its way. Check your spam folder too.", "good"); } catch (err) { toast(err.message, "bad"); }
+  }
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && S.open) closeSheet(); });
+document.addEventListener("input", e => {
+  if (e.target.name !== "url" || !e.target.closest("#subForm")) return;
+  const d = $("#det"), r = parseLink(e.target.value);
+  if (!r) { d.innerHTML = ""; return; }
+  if (r.err) { d.innerHTML = `<span class="detect no">${esc(r.err)}</span>`; return; }
+  const mine = S.me.profile[r.platform];
+  if (!mine) { d.innerHTML = `<span class="detect no">Add your ${esc(PLAT[r.platform][0].split(" ")[0])} handle in your profile</span>`; return; }
+  if (r.handle && r.handle !== mine) { d.innerHTML = `<span class="detect no">This is ${esc(r.handle)}, not ${esc(mine)}</span>`; return; }
+  d.innerHTML = `<span class="detect ok">✓ ${esc(PLAT[r.platform][0])}</span>`;
+});
+document.addEventListener("submit", async e => {
+  if (e.target.id === "subForm") {
+    e.preventDefault();
+    const f = e.target, b = f.querySelector("button"); b.disabled = true; b.textContent = "Checking the clip…";
+    try {
+      const s = await api("/api/earn/submissions", {method: "POST", body: {campaign: f.campaign.value, url: f.url.value, note: f.note.value}});
+      toast(`Clip sent. ${s.checks.owner === true ? "Your account is confirmed. " : ""}Views are counted on ${date(s.ready_at)}.`, "good");
+      S.tab = "clips"; S.prefill = ""; await refresh();
+    } catch (err) { toast(err.message, "bad"); b.disabled = false; b.innerHTML = "Send clip for verification " + ARROW; }
+  }
+  if (e.target.id === "profForm") {
+    e.preventDefault();
+    const f = e.target, body = Object.fromEntries(new FormData(f).entries()), b = f.querySelector("button.primary"); b.disabled = true;
+    try { await api("/api/earn/profile", {method: "PUT", body}); toast("Profile saved.", "good"); S.tab = "submit"; await refresh(); }
+    catch (err) { toast(err.message, "bad"); b.disabled = false; }
+  }
+});
+document.addEventListener("change", async e => {
+  const id = e.target.dataset?.proof; if (!id || !e.target.files[0]) return;
+  const fd = new FormData(); fd.append("file", e.target.files[0]);
+  toast("Uploading the screenshot…");
+  try { await api(`/api/earn/submissions/${id}/proof`, {method: "POST", body: fd}); toast("Proof added. A reviewer will check it.", "good"); await refresh(); } catch (err) { toast(err.message, "bad"); }
+});
+addEventListener("hashchange", route);
+
+// ---------------------------------------------------------------- motion
+let waiting = [];
+function watchReveal() { waiting = $$(".reveal:not(.in)"); check(); }
+function check() { const h = innerHeight; waiting = waiting.filter(el => { if (el.getBoundingClientRect().top < h * .94) { el.classList.add("in"); return false; } return true; }); }
+addEventListener("scroll", check, {passive: true}); addEventListener("resize", check);
+setInterval(check, 500);
+const navEl = $("#nav"); addEventListener("scroll", () => navEl.classList.toggle("stuck", scrollY > 4), {passive: true});
+$("#yr").textContent = new Date().getFullYear();
+const startAscii = () => { try { GradientASCII($("#ga"), {colors: ["#c6f432", "#1e1612", "#4e6b00", "#2c221d", "#c6f432"], shape: "horizon", lightMode: false, cellSize: 16, density: 0.7, glyphOpacity: 0.22, gradientOpacity: 0.28, glow: 0.05, grain: 0.05, mouseInteraction: false, clickEffect: "none"}); } catch {} };
+window.GradientASCII ? startAscii() : addEventListener("load", startAscii, {once: true});
+watchReveal();
+load().then(route).catch(e => toast(e.message, "bad"));
+</script>
+</body>
+</html>

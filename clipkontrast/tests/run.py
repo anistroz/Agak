@@ -45,7 +45,10 @@ def main() -> int:
         else:
             print("The test server did not start.")
             return 1
+        only = os.environ.get("CLIPKONTRAST_TEST_ONLY", "")
         runs = [("permissions", ["tests/test_permissions.py", BASE, str(ROOT), sys.executable]),
+                ("Earn: campaigns, links, cross-checks, budget and payouts", ["tests/test_earn.py", BASE, str(ROOT), sys.executable]),
+                ("Earn-only website: clip-making off, Earn on", ["tests/test_earn_only.py", str(ROOT)]),
                 ("abuse and limits", ["tests/test_abuse.py", BASE, str(ROOT)]),
                 ("queue under load", ["tests/test_load_queue.py", str(ROOT)]),
                 ("deleting and bulk actions", ["tests/test_delete.py"]),
@@ -67,6 +70,8 @@ def main() -> int:
                 ("security: visitor address, email addresses, Google sign-in, prompts", ["tests/test_hardening.py"]),
                 ("long logs, the machine monitor, failed recordings, admin day totals", ["tests/test_robustness.py"])]
         for name, args in runs:
+            if only and only.lower() not in name.lower():
+                continue
             print(f"\n=== {name} ===", flush=True)
             r = subprocess.run([sys.executable, *args], cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace")
             lines = (r.stdout + r.stderr).splitlines()

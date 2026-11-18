@@ -159,10 +159,16 @@ SESSION_DAYS = int(env("CLIPKONTRAST_SESSION_DAYS", "30"))
 # on your own computer. On a server that other people can reach, set CLIPKONTRAST_ACCOUNTS=1: everyone then signs up
 # and signs in, and each person only sees their own videos.
 ACCOUNTS = env("CLIPKONTRAST_ACCOUNTS", "0") == "1"
+# Earn (paid clipping campaigns) lives on one public website. EARN_ONLY=1 on that website turns clip-making off for
+# everyone but admins, so the server only does the light work (accounts, campaigns, links, payouts) and people make
+# clips on their own computers with the free download. EARN_URL is where the downloaded app sends people to earn.
+EARN_ONLY = env("CLIPKONTRAST_EARN_ONLY", "0") == "1"
+EARN_URL = (env("CLIPKONTRAST_EARN_URL") or "https://clipkontrast.com").rstrip("/")
 # The two buttons along the top of the dashboard: the project's code, and where to follow its maker (feedback goes
 # there too). Set either to an empty value to hide that button, or point them at your own pages in a fork.
 REPO_URL = env("CLIPKONTRAST_REPO_URL", "https://github.com/anistroz/Agak").strip()
 FOLLOW_URL = env("CLIPKONTRAST_FOLLOW_URL", "https://www.instagram.com/anistroz.ai/").strip()
+DOWNLOAD_URL = (env("CLIPKONTRAST_DOWNLOAD_URL") or REPO_URL).strip()     # where "Download the free clip studio" goes
 
 # ---------------------------------------------------------------- limits (per user, and for the whole server)
 # Your own ClipKontrast has no limits unless you set them: 0 (the default) means "none" for every limit below. The

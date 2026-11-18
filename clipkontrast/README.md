@@ -180,6 +180,22 @@ python -m studio.admin grant you@example.com
 
 `revoke` and `list` work the same way. The admin dashboard is at `/admin` and answers "not found" to everyone else.
 
+## Earn: paid clipping campaigns
+
+ClipKontrast also runs paid clipping campaigns at **/earn** (on a server with accounts switched on).
+
+- **Clippers** sign up (email or Google), confirm their email, fill in a payout profile (UPI ID, WhatsApp, their
+  YouTube / Instagram / X / TikTok handles), join a campaign and paste each clip link.
+- **Every link is cross-checked** the moment it is sent: it must be on the clipper's own account, posted after the
+  campaign started, carry the required caption tag, and not have been sent before. YouTube is checked fully
+  automatically with a YouTube API key; X and TikTok handles and posting times are read from the link itself;
+  Instagram is checked by a person, with an Insights screenshot the clipper uploads.
+- **Views** are counted after the campaign's hold period (7 days by default). YouTube views refresh by themselves.
+- **Admins** create campaigns, set the budget and rate, review clips and record UPI payouts at **/admin/earn**.
+  Approved money comes out of the budget, and a campaign closes by itself when its budget is used up.
+
+The code is `studio/earn.py` (with the `earn_*` tables in `studio/db.py`), `web/earn.html` and `web/earn-admin.html`.
+
 ## How it is built
 
 | Part | What it is |

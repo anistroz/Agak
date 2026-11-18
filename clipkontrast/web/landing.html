@@ -76,7 +76,7 @@ header.nav.stuck{border-color:var(--line)}
 header.nav .wrap{display:flex;align-items:center;gap:24px;height:60px;max-width:1180px}
 header.nav img{height:40px;display:block}
 header.nav nav{display:flex;gap:4px;flex:1;justify-content:center;font-size:15px;font-weight:500}
-header.nav nav a{text-decoration:none;color:var(--dim);padding:8px 14px;border-radius:var(--r);transition:color .15s ease,background-color .15s ease}
+header.nav nav a{white-space:nowrap;text-decoration:none;color:var(--dim);padding:8px 14px;border-radius:var(--r);transition:color .15s ease,background-color .15s ease}
 header.nav nav a:hover{color:var(--text);background:var(--muted)}
 header.nav .signin{color:var(--text);text-decoration:none;font-weight:500;font-size:15px;padding:8px 12px;border-radius:var(--r);transition:background-color .15s ease}
 header.nav .signin:hover{background:var(--muted)}
@@ -271,12 +271,19 @@ details p{color:var(--dim);margin-top:12px;font-size:16px}
 }
 @media (max-width:560px){.bar{border-radius:var(--r-lg);flex-basis:100%}.bar form{flex-direction:column;align-items:stretch}.bar .btn{width:100%;border-radius:var(--r)}.ask .or{display:none}.ask .up{width:100%;height:50px}header.nav .signin{display:none}.reel figure:not(.mid){display:none}.reel figure.mid{flex-basis:260px}.mock.result{grid-template-columns:110px 1fr}.mock.result video{width:110px}.trio b{font-size:36px}.notes span+span::before{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .reveal,.js .ledger div{opacity:1;transform:none}.jb .t i{width:var(--v)}.meterbar i{width:70%}}
+.earnband{background:var(--frame);padding:14px 0}
+.earnband a{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--frame-text);font-size:15px;flex-wrap:wrap}
+.earnband b{color:#fff}
+.earnband .eb-live{display:inline-flex;align-items:center;gap:6px;background:var(--brand);color:var(--ink);font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.earnband .eb-live i{width:6px;height:6px;border-radius:50%;background:var(--ink);animation:pulse 1.3s infinite}
+.earnband .eb-go{margin-left:auto;color:var(--brand);font-weight:600;transition:color .15s ease}
+.earnband a:hover .eb-go{color:#fff}
 </style>
 </head>
 <body>
 <header class="nav" id="nav"><div class="wrap">
   <a href="/" aria-label="ClipKontrast home"><img src="/brand/logo.svg" alt="ClipKontrast"></a>
-  <nav aria-label="Sections"><a href="#how">How it works</a><a href="#features">Features</a><a href="#open">Open source</a><a href="#for">Who it's for</a><a href="#faq">FAQ</a></nav>
+  <nav aria-label="Sections"><a href="/earn" style="color:var(--ink);font-weight:600">Earn <span style="font-size:10px;font-weight:700;background:var(--brand);color:var(--ink);padding:2px 6px;border-radius:999px;vertical-align:2px">NEW</span></a><a href="#how">How it works</a><a href="#features">Features</a><a href="#open">Open source</a><a href="#for">Who it's for</a><a href="#faq">FAQ</a></nav>
   <a class="signin" href="/login" data-auth="in">Sign in</a>
   <a class="btn primary cta" href="/signup" data-auth="up">Sign up</a>
 </div></header>
@@ -285,7 +292,7 @@ details p{color:var(--dim);margin-top:12px;font-size:16px}
 <div class="hero">
   <div class="hero-top"><div class="ga-bg" id="heroAscii" aria-hidden="true"></div>
   <div class="hero-copy">
-    <a class="announce reveal" href="#live"><span class="livepill"><i></i>Live</span><span class="al">Clips YouTube, Twitch and Kick streams as they happen</span><span class="as">Clips streams as they happen</span> <b>See how <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></b></a>
+    <a class="announce reveal" href="/earn"><span class="livepill" style="background:var(--brand);color:var(--ink)"><i style="background:var(--ink)"></i>New</span><span class="al">Earn money clipping: paid campaigns are live</span><span class="as">Paid clipping campaigns are live</span> <b>See campaigns <svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></b></a>
     <h1 class="reveal" style="--d:.05s">Clip live streams <span class="hl">while they are still live</span></h1>
     <p class="lede reveal" style="--d:.12s">Add a streamer once. ClipKontrast records the stream, finds the best moments and hands you captioned vertical clips while it is still live. Replays work too.</p>
     <div class="ask reveal" style="--d:.2s"><div class="bar"><form class="linkform">
@@ -301,6 +308,7 @@ details p{color:var(--dim);margin-top:12px;font-size:16px}
   </div>
   <p class="reel-note">The three caption styles, rendered by ClipKontrast itself.</p>
 </div>
+<div class="earnband"><div class="wrap"><a href="/earn"><span class="eb-live"><i></i>NEW</span><span><b>Earn with ClipKontrast.</b> Join paid clipping campaigns, post from your own accounts and get paid per 1,000 views, straight to UPI.</span><span class="eb-go">See campaigns →</span></a></div></div>
 <div class="sized"><div class="plats">
     <div><p>Clips from</p><span>YouTube</span><span>Twitch</span><span>Kick</span><span>Your own video files</span></div>
     <div><p>Posts straight to</p><span>YouTube Shorts</span><span>Instagram Reels</span></div>
@@ -389,7 +397,7 @@ details p{color:var(--dim);margin-top:12px;font-size:16px}
     <div class="fbrand"><a href="/" aria-label="ClipKontrast home"><img src="/brand/logo-light.svg" alt="ClipKontrast" width="120" height="30"></a>
       <p>AI clipping for Twitch, Kick and YouTube streams. Captioned vertical clips while the stream is still live. Free and open source.</p>
       <a class="fcta" href="/signup">Sign up</a></div>
-    <div><h4>Product</h4><ul><li><a href="/#how">How it works</a></li><li><a href="/#features">Features</a></li><li><a href="/#live">Live clipping</a></li><li><a href="/#open">Open source</a></li><li><a href="/#faq">FAQ</a></li></ul></div>
+    <div><h4>Product</h4><ul><li><a href="/earn">Earn: paid campaigns</a></li><li><a href="/#how">How it works</a></li><li><a href="/#features">Features</a></li><li><a href="/#live">Live clipping</a></li><li><a href="/#open">Open source</a></li><li><a href="/#faq">FAQ</a></li></ul></div>
     <div><h4>Get started</h4><ul><li><a href="/signup">Create an account</a></li><li><a href="/login">Sign in</a></li><li><a href="/reset">Reset password</a></li></ul></div>
     <div><h4>Legal</h4><ul><li><a href="/terms">Terms of Service</a></li><li><a href="/privacy">Privacy Policy</a></li><li><a href="/acceptable-use">Acceptable Use</a></li></ul></div>
   </div>
@@ -448,6 +456,20 @@ $$(".linkform").forEach(f => f.addEventListener("submit", e => {
   try { if (v) sessionStorage.setItem("clipkontrast_link", v); } catch {}
   location.href = signedIn ? "/app" : "/signup";
 }));
+
+// On the Earn website, clips are made with the free download: the link bar and upload buttons lead there.
+let earnOnly = false;
+fetch("/api/public").then(r => r.json()).then(p => {
+  if (!p.earn_only) return;
+  earnOnly = true;
+  const dl = p.download_url || "{{DOWNLOAD}}";
+  $$('[data-auth="up2"]').forEach(e => { e.href = dl; e.target = "_blank"; e.rel = "noopener"; e.lastChild.textContent = "Download free"; });
+  $$('[data-auth="up"]').forEach(e => { e.href = "/earn"; e.textContent = "Start earning"; });
+  $$(".linkform button").forEach(b => b.firstChild.textContent = "Download free ");
+  const nav = document.querySelector("header.nav nav");
+  if (nav) { nav.querySelector('a[href="#for"]')?.remove(); nav.querySelector('a[href="#open"]')?.remove(); nav.insertAdjacentHTML("beforeend", `<a href="${dl}" target="_blank" rel="noopener">Download</a>`); }
+}).catch(() => {});
+$$(".linkform").forEach(f => f.addEventListener("submit", e => { if (earnOnly) { e.preventDefault(); e.stopImmediatePropagation(); location.href = $$('[data-auth="up2"]')[0]?.href || "/earn"; } }, true));
 
 fetch("/api/auth/me").then(r => r.json()).then(d => {
   if (!d.user) return;

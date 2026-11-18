@@ -58,6 +58,20 @@ Set the `CLIPKONTRAST_SMTP_*` lines and `CLIPKONTRAST_MAIL_FROM` to send passwor
 SMTP service. On a public site also set `CLIPKONTRAST_VERIFY_EMAIL=1`, so people confirm their address before clipping.
 Without SMTP on an HTTPS site, no reset emails can be sent.
 
+## Earn: launching a paid campaign
+
+1. Accounts must be on (`CLIPKONTRAST_ACCOUNTS=1`, the Docker default), and email confirmation should be on:
+   set the `CLIPKONTRAST_SMTP_*` lines, `CLIPKONTRAST_MAIL_FROM` and `CLIPKONTRAST_VERIFY_EMAIL=1`. Sign in with
+   Google (see above) is the quickest way in for clippers: Google has already confirmed the address.
+2. Make yourself an admin (step 5 above) and open `https://your-domain/admin/earn`.
+3. **Settings**: paste a YouTube Data API v3 key so YouTube Shorts are checked and counted automatically.
+4. **Campaigns, New campaign**: name, creator, brief, rules, stream links, platforms, required caption tag, budget,
+   rate per 1,000 views, minimum views, most per clip, hold days and dates. Save, add a cover, then **Go live**.
+5. Share `https://your-domain/earn` (or `/earn#c=<campaign-slug>` for one campaign) with your clippers.
+6. **Review clips** daily: clips turn **Ready** after the hold period. Type in Instagram and X views from the
+   clipper's screenshot, then approve. **Payouts** lists what each clipper is owed with their UPI ID: send the
+   money from your UPI app, then press **Mark paid** with the UTR number. The clipper is notified each time.
+
 ## Good to know
 
 - **Data**: everything lives in two Docker volumes, `pgdata` (accounts, AI usage) and `data` (videos, clips).

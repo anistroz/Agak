@@ -333,7 +333,7 @@ function draw() {
   $("#nav").innerHTML = `<h4>Admin</h4>` + Object.entries(TABS).map(([k, [l, i]]) =>
     `<a class="nav-item ${S.tab === k ? "on" : ""}" href="${pathFor(k)}" data-act="tab" data-k="${k}">${ic(i)}<span class="label">${l}</span>${k === "users" && a ? `<span class="count">${num(a.totals.users)}</span>` : ""}${k === "feedback" && S.fb?.counts.new ? `<span class="count">${num(S.fb.counts.new)}</span>` : ""}</a>`).join("");
   $("#foot").innerHTML = (S.me ? `<div class="who"><b>${esc(S.me.name)}</b>${esc(S.me.email)}</div>` : "") +
-    `<a class="nav-item" href="/app">${ic("arrowr")}<span class="label">Back to the app</span></a>
+    `<a class="nav-item" href="/admin/earn">${ic("arrowr")}<span class="label">Earn campaigns</span></a><a class="nav-item" href="/app">${ic("arrowr")}<span class="label">Back to the app</span></a>
      <button class="nav-item" data-act="logout">${ic("signout")}<span class="label">Sign out</span></button>`;
   $("#title").textContent = title; $("#subtitle").textContent = sub;
   $("#actions").innerHTML = `<button class="btn sm" data-act="refresh">Refresh</button>`;
