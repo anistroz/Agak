@@ -32,7 +32,13 @@ Optional, nicer: on GitHub make a **Release** and attach the folder as a zip, th
    CLIPKONTRAST_SMTP_USER=your-brevo-login
    CLIPKONTRAST_SMTP_PASSWORD=your-brevo-smtp-key
    CLIPKONTRAST_MAIL_FROM=ClipKontrast <hello@clipkontrast.com>
+   CLIPKONTRAST_CONTACT_EMAIL=hello@clipkontrast.com
+   CLIPKONTRAST_LEGAL_NAME=Your full name or business name
+   CLIPKONTRAST_LEGAL_COUNTRY=India
    ```
+
+   The last three fill in the Terms and Privacy pages (who runs the site, whose law applies, how to reach you).
+   Without them those pages show blanks, which is not good enough for a site that pays people.
 
    (Gmail works too: `smtp.gmail.com`, your Gmail address, and an app password from myaccount.google.com/apppasswords.)
 2. Double-click `Start-ClipKontrast-Windows.bat`. Keep the black window open.
